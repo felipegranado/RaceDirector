@@ -1,31 +1,31 @@
-//ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-//İ                                                                         Ş
-//İ Module: Header file for plugin object types                             Ş
-//İ                                                                         Ş
-//İ Description: interface declarations for plugin objects                  Ş
-//İ                                                                         Ş
-//İ This source code module, and all information, data, and algorithms      Ş
-//İ associated with it, are part of isiMotor Technology (tm).               Ş
-//İ                 PROPRIETARY AND CONFIDENTIAL                            Ş
-//İ Copyright (c) 1996-2013 Image Space Incorporated.  All rights reserved. Ş
-//İ                                                                         Ş
-//İ Change history:                                                         Ş
-//İ   tag.2008.02.15: created                                               Ş
-//İ                                                                         Ş
-//ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ Module: Header file for plugin object types                             ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ Description: interface declarations for plugin objects                  ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ This source code module, and all information, data, and algorithms      ï¿½
+//ï¿½ associated with it, are part of isiMotor Technology (tm).               ï¿½
+//ï¿½                 PROPRIETARY AND CONFIDENTIAL                            ï¿½
+//ï¿½ Copyright (c) 1996-2013 Image Space Incorporated.  All rights reserved. ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ Change history:                                                         ï¿½
+//ï¿½   tag.2008.02.15: created                                               ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 #ifndef _PLUGIN_OBJECTS_HPP_
 #define _PLUGIN_OBJECTS_HPP_
 
 
-// rF currently uses 4-byte packing ... whatever the current packing is will
-// be restored at the end of this include with another #pragma.
+// O rF atualmente usa empacotamento de 4 bytes ... qualquer que seja o empacotamento atual serÃ¡
+// restaurado no final deste include com outro #pragma.
 #pragma pack( push, 4 )
 
 
-//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-//³ types of plugins                                                       ³
-//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½ tipos de plugins                                                        ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 enum PluginObjectType
 {
@@ -41,29 +41,29 @@ enum PluginObjectType
 };
 
 
-//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-//³  PluginObject                                                          ³
-//³    - interface used by plugin classes.                                 ³
-//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½  PluginObject                                                          ï¿½
+//ï¿½    - interface usada pelas classes de plugin.                          ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 class PluginObject
 {
  private:
 
-  class PluginInfo *mInfo;             // used by main executable to obtain info about the plugin that implements this object
+  class PluginInfo *mInfo;             // usado pelo executÃ¡vel principal para obter informaÃ§Ãµes sobre o plugin que implementa este objeto
 
  public:
 
-  void SetInfo( class PluginInfo *p )  { mInfo = p; }        // used by main executable
-  class PluginInfo *GetInfo() const    { return( mInfo ); }  // used by main executable
-  class PluginInfo *GetInfo()          { return( mInfo ); }  // used by main executable
+  void SetInfo( class PluginInfo *p )  { mInfo = p; }        // usado pelo executÃ¡vel principal
+  class PluginInfo *GetInfo() const    { return( mInfo ); }  // usado pelo executÃ¡vel principal
+  class PluginInfo *GetInfo()          { return( mInfo ); }  // usado pelo executÃ¡vel principal
 };
 
 
-//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-//³ typedefs for dll functions - easier to use a typedef than to type      ³
-//³ out the crazy syntax for declaring and casting function pointers       ³
-//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½ typedefs para funÃ§Ãµes DLL - mais fÃ¡cil usar um typedef do que digitar   ï¿½
+//ï¿½ fora a sintaxe complicada para declarar e converter ponteiros de funÃ§Ã£o ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 typedef const char *      ( __cdecl *GETPLUGINNAME )();
 typedef PluginObjectType  ( __cdecl *GETPLUGINTYPE )();
@@ -72,10 +72,10 @@ typedef PluginObject *    ( __cdecl *CREATEPLUGINOBJECT )();
 typedef void              ( __cdecl *DESTROYPLUGINOBJECT )( PluginObject *obj );
 
 
-//ÚÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄ¿
-//ÀÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÄÙ
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
-// See #pragma at top of file
+// Veja #pragma no topo do arquivo
 #pragma pack( pop )
 
 #endif // _PLUGIN_OBJECTS_HPP_

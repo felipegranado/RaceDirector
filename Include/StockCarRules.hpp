@@ -1,68 +1,68 @@
-//ÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜÜ
-//Ý                                                                         Þ
-//Ý Module: Header file for stock car rules                                 Þ
-//Ý                                                                         Þ
-//Ý Description: Implements stock car rules for vehicle races               Þ
-//Ý                                                                         Þ
-//Ý This source code module, and all information, data, and algorithms      Þ
-//Ý associated with it, are part of isiMotor Technology (tm).               Þ
-//Ý                 PROPRIETARY AND CONFIDENTIAL                            Þ
-//Ý Copyright (c) 1996-2015 Image Space Incorporated.  All rights reserved. Þ
-//Ý                                                                         Þ
-//Ý Change history:                                                         Þ
-//Ý   tag.2015.09.30: created                                               Þ
-//Ý                                                                         Þ
-//ßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßßß
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ Module: Header file for stock car rules                                 ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ Description: Implements stock car rules for vehicle races               ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ This source code module, and all information, data, and algorithms      ï¿½
+//ï¿½ associated with it, are part of isiMotor Technology (tm).               ï¿½
+//ï¿½                 PROPRIETARY AND CONFIDENTIAL                            ï¿½
+//ï¿½ Copyright (c) 1996-2015 Image Space Incorporated.  All rights reserved. ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ Change history:                                                         ï¿½
+//ï¿½   tag.2015.09.30: created                                               ï¿½
+//ï¿½                                                                         ï¿½
+//ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½
 
 #ifndef _STOCK_CAR_RULES_HPP_
 #define _STOCK_CAR_RULES_HPP_
 
-#include "InternalsPlugin.hpp"     // base class for plugin objects to derive from
-#include <cstdio>                  // for logging
+#include "InternalsPlugin.hpp"     // classe base da qual os objetos de plugin devem derivar
+#include <cstdio>                  // para logging
 
 
-class StockCarRulesPlugin : public InternalsPluginV07 // REMINDER: exported function GetPluginVersion() should return 1 if you are deriving from this InternalsPluginV01, 2 for InternalsPluginV02, etc.
+class StockCarRulesPlugin : public InternalsPluginV07 // LEMBRETE: a funÃ§Ã£o exportada GetPluginVersion() deve retornar 1 se vocÃª estiver derivando de InternalsPluginV01, 2 para InternalsPluginV02, etc.
 {
  protected:
 
-  // logging
-  bool mLogging;                        // whether we want logging enabled
-  char *mLogPath;                       // path to write logs to
-  FILE *mLogFile;                       // the file pointer
+  // log
+  bool mLogging;                        // se queremos habilitar o log
+  char *mLogPath;                       // caminho para gravar os logs
+  FILE *mLogFile;                       // o ponteiro para o arquivo
 
-  // behavior controls
-  float mAdjustFrozenOrder;             // a threshold (as a fraction of the safety car threshold) in order to demote vehicles down the frozen order
-  long mAllowFrozenAdjustments;         // 0 = don't allow any adjustments, 1 = allow adjustments when somebody is passed while causing yellow, 2 = adjust for any pass (essentially, no frozen order)
-  long mAdjustUntilYellowFlagState;     // which yellow flag state to stop adjusting order at
-  bool mEnableLuckyDogFreePass;         // whether lucky dog/free pass is enabled
+  // controles de comportamento
+  float mAdjustFrozenOrder;             // um limite (como uma fraÃ§Ã£o do limite do safety car) para rebaixar veÃ­culos na ordem congelada
+  long mAllowFrozenAdjustments;         // 0 = nÃ£o permitir ajustes, 1 = permitir ajustes quando alguÃ©m Ã© ultrapassado enquanto causa a bandeira amarela, 2 = ajustar para qualquer ultrapassagem (essencialmente, sem ordem congelada)
+  long mAdjustUntilYellowFlagState;     // atÃ© qual estado da bandeira amarela parar de ajustar a ordem
+  bool mEnableLuckyDogFreePass;         // se o "lucky dog/free pass" estÃ¡ habilitado
 
-  // participant info
+  // informaÃ§Ãµes do participante
   struct KnownCar
   {
-    // basic info or info derived while processing track rules
-    long mIndex;                        // index into mKnownCar array
-    long mID;                           // slot ID
-    long mLapsDown;                     // number of laps down when caution came out (0 = on the lead lap)
-    float mWorstYellowSeverity;         // worst yellow severity (a rating of how much this vehicle is causing a yellow) around the time the full-course caution was called
-    bool mPittedAtDesignatedTime;       // whether vehicle pitted at the designated time (depending on whether it was on the lead lap)
-    bool mPittedAtSomeOtherTime;        // whether vehicle pitted at some other time
+    // informaÃ§Ãµes bÃ¡sicas ou informaÃ§Ãµes derivadas ao processar as regras da pista
+    long mIndex;                        // Ã­ndice no array mKnownCar
+    long mID;                           // ID do slot
+    long mLapsDown;                     // nÃºmero de voltas a menos quando a cautela foi acionada (0 = na volta de lideranÃ§a)
+    float mWorstYellowSeverity;         // pior gravidade de bandeira amarela (uma avaliaÃ§Ã£o de quanto este veÃ­culo estÃ¡ causando uma bandeira amarela) na Ã©poca em que a cautela total foi acionada
+    bool mPittedAtDesignatedTime;       // se o veÃ­culo entrou nos boxes no tempo designado (dependendo se estava na volta de lideranÃ§a)
+    bool mPittedAtSomeOtherTime;        // se o veÃ­culo entrou nos boxes em algum outro momento
 
-    // info copied from latest scoring update
-    bool mUnderYellow;                  // whether vehicle has taken full-course caution at s/f line
-    bool mInPits;                       // between pit entrance and pit exit (not always accurate for remote vehicles)
-    unsigned char mPitState;            // 0=none, 1=request, 2=entering, 3=stopped, 4=exiting
-    unsigned char mCountLapFlag;        // 0 = do not count lap or time, 1 = count lap but not time, 2 = count lap and time
-    signed char mFinishStatus;          // 0=none, 1=finished, 2=dnf, 3=dq
-    unsigned char mPlace;               // 1-based position (current place in race)
-    short mTotalLaps;                   // laps completed
-    unsigned char mNumEOLLs;            // number of "End Of Longest Line" penalties
+    // informaÃ§Ãµes copiadas da Ãºltima atualizaÃ§Ã£o de pontuaÃ§Ã£o
+    bool mUnderYellow;                  // se o veÃ­culo tomou a cautela total na linha de chegada/partida
+    bool mInPits;                       // entre a entrada dos boxes e a saÃ­da dos boxes (nÃ£o sempre preciso para veÃ­culos remotos)
+    unsigned char mPitState;            // 0=nÃ£o, 1=pedido, 2=entrando, 3=parado, 4=saindo
+    unsigned char mCountLapFlag;        // 0 = nÃ£o contar volta ou tempo, 1 = contar volta mas nÃ£o tempo, 2 = contar volta e tempo
+    signed char mFinishStatus;          // 0=nada, 1=terminado, 2=abandonou, 3=desclassificado
+    unsigned char mPlace;               // posiÃ§Ã£o baseada em 1 (posiÃ§Ã£o atual na corrida)
+    short mTotalLaps;                   // voltas completadas
+    unsigned char mNumEOLLs;            // nÃºmero de penalidades de "Fim da Linha Mais Longa"
 
-    char mDriverName[ sizeof( VehicleScoringInfoV01 ) ];    // driver name (this could change during a swap)
-    double mPathLateral;                // lateral position w.r.t. the approximate "center" of track
-    double mLapDist;                    // current lap distance
+    char mDriverName[ sizeof( VehicleScoringInfoV01 ) ];    // nome do piloto (isto pode mudar durante uma troca)
+    double mPathLateral;                // posiÃ§Ã£o lateral em relaÃ§Ã£o ao "centro" aproximado da pista
+    double mLapDist;                    // distÃ¢ncia atual na volta
 
-    // Total lap distance, with a correction for rolling starts, where mTotalLaps remains zero during the first
-    // s/f crossing after green. This can be detected because the "count lap flag" changes from 0 to 2.
+    // DistÃ¢ncia total da volta, com uma correÃ§Ã£o para largadas rolantes, onde mTotalLaps permanece zero durante a primeira
+    // passagem pela linha de chegada/partida apÃ³s o verde. Isso pode ser detectado porque a "bandeira de contagem de volta" muda de 0 para 2.
     double CorrectedTotalLapDist( double fullLapDist ) const
     {
       double ret = ( mTotalLaps * fullLapDist ) + mLapDist;
@@ -72,30 +72,30 @@ class StockCarRulesPlugin : public InternalsPluginV07 // REMINDER: exported func
     }
   };
 
-  long mMaxKnownCars;                   // number of allocated known cars
-  long mNumKnownCars;                   // number of valid known cars
-  KnownCar *mKnownCar;                  // array of known cars
+  long mMaxKnownCars;                   // nÃºmero de carros conhecidos alocados
+  long mNumKnownCars;                   // nÃºmero de carros conhecidos vÃ¡lidos
+  KnownCar *mKnownCar;                  // array de carros conhecidos
 
-  enum PassStatus : unsigned char // this works in VC, but if there's trouble with other compilers one can also use the C++11 construct: enum class ObsticalePlans : unsigned char
+  enum PassStatus : unsigned char // isso funciona no VC, mas se houver problemas com outros compiladores, tambÃ©m Ã© possÃ­vel usar o construto C++11: enum class ObsticalePlans : unsigned char
   {
-    PS_NONE = 0,                        // no pass recorded
-    PS_PHYSICAL,                        // physically passed, but not currently legal
-    PS_LEGAL                            // a legal pass, but *maybe* pending because some other illegal pass involving a third car has not been resolved    
+    PS_NONE = 0,                        // nenhuma ultrapassagem registrada
+    PS_PHYSICAL,                        // ultrapassagem fÃ­sica, mas atualmente nÃ£o legal
+    PS_LEGAL                            // uma ultrapassagem legal, mas *talvez* pendente porque alguma outra ultrapassagem ilegal envolvendo um terceiro carro nÃ£o foi resolvida    
   };
-  PassStatus *mFrozenPass;              // 2-D array of the status of on-track passes under yellow (see code for usage)
+  PassStatus *mFrozenPass;              // array 2-D do status das ultrapassagens na pista sob bandeira amarela (veja o cÃ³digo para uso)
 
-  // track order in each lane (which is recorded and frozen when caution starts, and then adjusted and maintained throughout the caution period)
+  // ordem na pista em cada faixa (que Ã© registrada e congelada quando a cautela comeÃ§a, e depois ajustada e mantida durante todo o perÃ­odo de cautela)
   struct Lane
   {
     struct Member
     {
-      long mID;                         // slot ID
-      double mDist;                     // total lap dist when a caution came out and the field was frozen
+      long mID;                         // ID do slot
+      double mDist;                     // distÃ¢ncia total da volta quando a cautela foi acionada e o grupo foi congelado
     };
 
-    long mMaxMembers;                   // number of allocated members
-    long mNumMembers;                   // number of valid members
-    Member *mMember;                    // array of members
+    long mMaxMembers;                   // nÃºmero de membros alocados
+    long mNumMembers;                   // nÃºmero de membros vÃ¡lidos
+    Member *mMember;                    // array de membros
 
     //
     Lane()                             { mMaxMembers = 0; mNumMembers = 0; mMember = NULL; }
@@ -114,31 +114,31 @@ class StockCarRulesPlugin : public InternalsPluginV07 // REMINDER: exported func
     }
   };
 
-  Lane mLane[ TRCOL_MAX_LANES ];        // array of lanes (but the stock car implementation only uses TRCOL_LEFT_LANE and TRCOL_RIGHT_LANE)
+  Lane mLane[ TRCOL_MAX_LANES ];        // array de faixas (mas a implementaÃ§Ã£o de stock car usa apenas TRCOL_LEFT_LANE e TRCOL_RIGHT_LANE)
 
-  // store some actions to apply a little later (when we are sure of the correct order, accounting for possible net lag)
-  long mMaxActions;                     // number of allocated actions
-  long mNumActions;                     // number of valid actions
-  TrackRulesActionV01 *mAction;         // array of actions
+  // armazenar algumas aÃ§Ãµes para aplicar um pouco mais tarde (quando estivermos certos da ordem correta, considerando possÃ­vel atraso na rede)
+  long mMaxActions;                     // nÃºmero de aÃ§Ãµes alocadas
+  long mNumActions;                     // nÃºmero de aÃ§Ãµes vÃ¡lidas
+  TrackRulesActionV01 *mAction;         // array de aÃ§Ãµes
 
-  // some state info
-  bool mProcessedLastLapOfCaution;      // Whether we have processed the last caution lap yet
-  long mLuckyDogID;                     // Keep track of who got the lucky dog if anybody (-1 if not applied yet)
-  double mLeaderLaneChoiceLateral;      // Lateral position of leader when first requested to make a lane choice (or DBL_MAX if invalid)
-  long mYellowFlagLaps;                 // Intended number of yellow flag laps to complete
-  double mCautionET;                    // time at which the caution was initialized
-  float mRandomGreenDist;               // A random value to prevent green flag from being shown at exactly the same spot every time
+  // algumas informaÃ§Ãµes de estado
+  bool mProcessedLastLapOfCaution;      // Se jÃ¡ processamos a Ãºltima volta de cautela
+  long mLuckyDogID;                     // Acompanhar quem recebeu o "lucky dog" se alguÃ©m (-1 se ainda nÃ£o aplicado)
+  double mLeaderLaneChoiceLateral;      // PosiÃ§Ã£o lateral do lÃ­der quando solicitado pela primeira vez para fazer uma escolha de faixa (ou DBL_MAX se invÃ¡lido)
+  long mYellowFlagLaps;                 // NÃºmero pretendido de voltas com bandeira amarela a serem completadas
+  double mCautionET;                    // tempo em que a cautela foi iniciada
+  float mRandomGreenDist;               // Um valor aleatÃ³rio para evitar que a bandeira verde apareÃ§a exatamente no mesmo local toda vez
 
-  // info copied from the latest scoring update
-  long mSession;                        // current session (0=testday 1-4=practice 5-8=qual 9=warmup 10-13=race)
-  double mCurrentET;                    // current time
-  double mEndET;                        // ending time
-  long  mMaxLaps;                       // maximum laps
-  double mFullLapDist;                  // distance around a full lap of the track
-  unsigned char mGamePhase;             // see InternalsPlugin.hpp
-  signed char mYellowFlagState;         // see InternalsPlugin.hpp
+  // informaÃ§Ãµes copiadas da Ãºltima atualizaÃ§Ã£o de pontuaÃ§Ã£o
+  long mSession;                        // sessÃ£o atual (0=dia de teste 1-4=treino 5-8=qualificaÃ§Ã£o 9=aquele 10-13=corrida)
+  double mCurrentET;                    // tempo atual
+  double mEndET;                        // tempo de tÃ©rmino
+  long  mMaxLaps;                       // mÃ¡ximo de voltas
+  double mFullLapDist;                  // distÃ¢ncia ao redor de uma volta completa da pista
+  unsigned char mGamePhase;             // veja InternalsPlugin.hpp
+  signed char mYellowFlagState;         // veja InternalsPlugin.hpp
 
-  // protected method(s)
+  // mÃ©todo(s) protegido(s)
   void Clear();
   void AddMember( TrackRulesColumnV01 colIndex, const Lane::Member &member );
   bool SafetyCarIsApproachingPitlane( TrackRulesV01 &info, long numLaps );
@@ -149,7 +149,7 @@ class StockCarRulesPlugin : public InternalsPluginV07 // REMINDER: exported func
   void FreezeOrder( TrackRulesV01 &info );
   void AdjustFrozenOrderNew( TrackRulesV01 &info, Lane &lane );
   void AdjustFrozenOrderOld( TrackRulesV01 &info );
-#if 1 // choose one
+#if 1 // escolha um
   void AdjustFrozenOrder( TrackRulesV01 &info ) { for( long i = 0; i < TRCOL_MAX_LANES; ++i ) AdjustFrozenOrderNew( info, mLane[ i ] ); }
 #else
   void AdjustFrozenOrder( TrackRulesV01 &info ) { AdjustFrozenOrderOld( info ); }
@@ -172,15 +172,15 @@ class StockCarRulesPlugin : public InternalsPluginV07 // REMINDER: exported func
 
   //
   void StartSession();
-  void SetEnvironment( const EnvironmentInfoV01 &info ); // may be called whenever the environment changes
+  void SetEnvironment( const EnvironmentInfoV01 &info ); // pode ser chamado sempre que o ambiente mudar
 
   //
-  bool WantsScoringUpdates()                                { return( true ); } // whether we want scoring updates
-  void UpdateScoring( const ScoringInfoV01 &info );                             // update plugin with scoring info (approximately five times per second)
+  bool WantsScoringUpdates()                                { return( true ); } // se queremos atualizaÃ§Ãµes de pontuaÃ§Ã£o
+  void UpdateScoring( const ScoringInfoV01 &info );                             // atualiza o plugin com informaÃ§Ãµes de pontuaÃ§Ã£o (aproximadamente cinco vezes por segundo)
 
   //
-  bool WantsTrackRulesAccess()                              { return( true ); } // change to true in order to read or write track order (during formation or caution laps)
-  bool AccessTrackRules( TrackRulesV01 &info );                                 // current track order passed in; return true if you want to change it (note: this will be called immediately after UpdateScoring() when appropriate)
+  bool WantsTrackRulesAccess()                              { return( true ); } // mudar para true para ler ou escrever a ordem da pista (durante voltas de formaÃ§Ã£o ou de cautela)
+  bool AccessTrackRules( TrackRulesV01 &info );                                 // ordem atual da pista passada; retorna true se vocÃª quiser mudÃ¡-la (nota: isso serÃ¡ chamado imediatamente apÃ³s UpdateScoring() quando apropriado)
 
   //
   bool GetCustomVariable( long i, CustomVariableV01 &var );

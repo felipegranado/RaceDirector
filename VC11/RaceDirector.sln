@@ -1,7 +1,7 @@
 
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "StockCarRules", "StockCarRules.vcxproj", "{121EE06F-1788-4640-BEE6-2A96D517E922}"
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "RaceDirector", "RaceDirector.vcxproj", "{121EE06F-1788-4640-BEE6-2A96D517E922}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
