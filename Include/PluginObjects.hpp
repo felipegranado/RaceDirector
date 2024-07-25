@@ -18,7 +18,7 @@
 #define _PLUGIN_OBJECTS_HPP_
 
 
-// O rF atualmente usa empacotamento de 4 bytes ... qualquer que seja o empacotamento atual será
+// O rF atualmente usa empacotamento de 4 bytes ... qualquer que seja o empacotamento atual sera
 // restaurado no final deste include com outro #pragma.
 #pragma pack( push, 4 )
 
@@ -50,19 +50,19 @@ class PluginObject
 {
  private:
 
-  class PluginInfo *mInfo;             // usado pelo executável principal para obter informações sobre o plugin que implementa este objeto
+  class PluginInfo *mInfo;             // usado pelo executavel principal para obter informacoes sobre o plugin que implementa este objeto
 
  public:
 
-  void SetInfo( class PluginInfo *p )  { mInfo = p; }        // usado pelo executável principal
-  class PluginInfo *GetInfo() const    { return( mInfo ); }  // usado pelo executável principal
-  class PluginInfo *GetInfo()          { return( mInfo ); }  // usado pelo executável principal
+  void SetInfo( class PluginInfo *p )  { mInfo = p; }        // usado pelo executavel principal
+  class PluginInfo *GetInfo() const    { return( mInfo ); }  // usado pelo executavel principal
+  class PluginInfo *GetInfo()          { return( mInfo ); }  // usado pelo executavel principal
 };
 
 
 //�������������������������������������������
-//� typedefs para funções DLL - mais fácil usar um typedef do que digitar   �
-//� fora a sintaxe complicada para declarar e converter ponteiros de função �
+//� typedefs para funcoes DLL - mais facil usar um typedef do que digitar   �
+//� fora a sintaxe complicada para declarar e converter ponteiros de funcao �
 //�������������������������������������������
 
 typedef const char *      ( __cdecl *GETPLUGINNAME )();

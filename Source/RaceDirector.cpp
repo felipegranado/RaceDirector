@@ -29,41 +29,38 @@ void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( static_cast< Ra
 
 // Classe RaceDirector
 
+FILE* logFile = fopen("RaceDirectorLog.txt", "a");
+
 RaceDirectorPlugin::RaceDirectorPlugin()
 {}
 
 
 void RaceDirectorPlugin::WriteLog( const char * const openStr, const char * const msg )
 {
-  FILE *fo;
-
-  fo = fopen( "RaceDirectorLog.txt", openStr );
-
-  if( fo != NULL )
+  if( logFile != NULL )
   {
+    // Escrever no log
     char buffer[80];
-    fprintf(fo, "%s%s\n", buffer, msg);
+    fprintf(logFile, "%s%s\n", buffer, msg);
 
-    fprintf( fo, "%s\n", msg );
-    fclose( fo );
+    fprintf( logFile, "%s\n", msg );
   } else {
     // Handle error: arquivo nao pode ser aberto
+    fclose( logFile );
   }
 }
 
 
-void RaceDirectorPlugin::RegistrarVelocidade( const TelemInfoV01 &telem, const VehicleScoringInfoV01 &vehscoring, const ScoringInfoV01 &scoring)
+void RaceDirectorPlugin::RegistrarLimitador( const TelemInfoV01 &telem, const VehicleScoringInfoV01 &vehscoring, const ScoringInfoV01 &scoring)
 {
   // Use the incoming data, for now I'll just write some of it to a file to a) make sure it
   // is working, and b) explain the coordinate system a little bit (see header for more info)
-  FILE *fo = fopen( "RaceDirectorLog.txt", "a" );
-
-  if( fo != NULL )
+  if( logFile != NULL )
   {
     // Registra o tempo, o piloto e o status do Limitador
-    fprintf( fo, "Tempo=%s | Piloto=%s | Limiter=%s\n", scoring.mCurrentET, vehscoring.mDriverName, telem.mSpeedLimiter );
-
-    // Close file
-    fclose( fo );
+    fprintf( logFile, "Tempo=%s | Piloto=%s | Limiter=%s\n", scoring.mCurrentET, vehscoring.mDriverName, telem.mSpeedLimiter );
+  } else {
+    // Handle error: arquivo nao pode ser aberto
+    fclose( logFile );
   }
 }

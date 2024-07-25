@@ -4,16 +4,16 @@
 #include "InternalsPlugin.hpp"     // classe base da qual os objetos de plugin devem derivar
 #include <cstdio>                  // para logging
 
-class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a função exportada GetPluginVersion() deve retornar 1 se você estiver derivando de InternalsPluginV01, 2 para InternalsPluginV02, etc.
+class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao exportada GetPluginVersion() deve retornar 1 se voce estiver derivando de InternalsPluginV01, 2 para InternalsPluginV02, etc.
 {
   public:
 
-    // SAÍDA DO JOGO
-    long WantsTelemetryUpdates() { return( 1 ); } // ALTERE PARA 1 PARA HABILITAR O EXEMPLO DE TELEMETRIA!
-    void RegistrarVelocidade( const TelemInfoV01 &telem, const VehicleScoringInfoV01 &vehscoring, const ScoringInfoV01 &scoring);
+    // SAIDA DO JOGO
+    void RegistrarLimitador( const TelemInfoV01 &telem, const VehicleScoringInfoV01 &vehscoring, const ScoringInfoV01 &scoring);
 
   private:
 
+    // ESCREVER NO LOG
     void WriteLog( const char * const openStr, const char * const msg );
 };
 
