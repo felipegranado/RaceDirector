@@ -22,8 +22,8 @@
 #include "InternalsPlugin.hpp"
 
 
-// This is used for the app to use the plugin for its intended purpose
-class ExampleInternalsPlugin : public InternalsPluginV01  // REMINDER: exported function GetPluginVersion() should return 1 if you are deriving from this InternalsPluginV01, 2 for InternalsPluginV02, etc.
+// Esta classe é usada pelo aplicativo para utilizar o plugin com seu propósito original
+class ExampleInternalsPlugin : public InternalsPluginV01  // LEMBRETE: a função exportada GetPluginVersion() deve retornar 1 se você estiver derivando desta InternalsPluginV01, 2 para InternalsPluginV02, etc.
 {
 
  public:
@@ -32,49 +32,49 @@ class ExampleInternalsPlugin : public InternalsPluginV01  // REMINDER: exported 
   ExampleInternalsPlugin() {}
   ~ExampleInternalsPlugin() {}
 
-  // These are the functions derived from base class InternalsPlugin
-  // that can be implemented.
-  void Startup( long version );  // game startup
-  void Shutdown();               // game shutdown
+  // Estas são as funções derivadas da classe base InternalsPlugin
+  // que podem ser implementadas.
+  void Startup( long version ); // inicialização do jogo
+  void Shutdown();              // encerramento do jogo
 
-  void EnterRealtime();          // entering realtime
-  void ExitRealtime();           // exiting realtime
+  void EnterRealtime();         // entrada em tempo real
+  void ExitRealtime();          // saída de tempo real
 
-  void StartSession();           // session has started
-  void EndSession();             // session has ended
+  void StartSession();          // início da sessão
+  void EndSession();            // fim da sessão
 
-  // GAME OUTPUT
-  long WantsTelemetryUpdates() { return( 1 ); } // CHANGE TO 1 TO ENABLE TELEMETRY EXAMPLE!
+  // SAÍDA DO JOGO
+  long WantsTelemetryUpdates() { return( 1 ); } // ALTERE PARA 1 PARA HABILITAR O EXEMPLO DE TELEMETRIA!
   void UpdateTelemetry( const TelemInfoV01 &info );
 
-  bool WantsGraphicsUpdates() { return( false ); } // CHANGE TO TRUE TO ENABLE GRAPHICS EXAMPLE!
+  bool WantsGraphicsUpdates() { return( false ); } // // ALTERE PARA TRUE PARA HABILITAR O EXEMPLO DE GRÁFICOS!
   void UpdateGraphics( const GraphicsInfoV01 &info );
 
-  // GAME INPUT
-  bool HasHardwareInputs() { return( false ); } // CHANGE TO TRUE TO ENABLE HARDWARE EXAMPLE!
-  void UpdateHardware( const double fDT ) { mET += fDT; } // update the hardware with the time between frames
-  void EnableHardware() { mEnabled = true; }             // message from game to enable hardware
-  void DisableHardware() { mEnabled = false; }           // message from game to disable hardware
+  // ENTRADA DO JOGO
+  bool HasHardwareInputs() { return( false ); } // ALTERE PARA TRUE PARA HABILITAR O EXEMPLO DE HARDWARE!
+  void UpdateHardware( const double fDT ) { mET += fDT; } // atualiza o hardware com o tempo entre frames
+  void EnableHardware() { mEnabled = true; }              // mensagem do jogo para habilitar o hardware
+  void DisableHardware() { mEnabled = false; }            // mensagem do jogo para desabilitar o hardware
 
-  // See if the plugin wants to take over a hardware control.  If the plugin takes over the
-  // control, this method returns true and sets the value of the double pointed to by the
-  // second arg.  Otherwise, it returns false and leaves the double unmodified.
+  // Verifica se o plugin deseja assumir o controle de um hardware. Se o plugin assumir o
+  // controle, este método retorna true e define o valor do double apontado pelo
+  // segundo argumento. Caso contrário, retorna false e deixa o double inalterado
   bool CheckHWControl( const char * const controlName, double &fRetVal );
 
-  bool ForceFeedback( double &forceValue );  // SEE FUNCTION BODY TO ENABLE FORCE EXAMPLE
+  bool ForceFeedback( double &forceValue );  // VEJA O CORPO DA FUNÇÃO PARA HABILITAR O EXEMPLO DE FORÇA
 
-  // SCORING OUTPUT
-  bool WantsScoringUpdates() { return( false ); } // CHANGE TO TRUE TO ENABLE SCORING EXAMPLE!
+  // SAÍDA DE PONTUAÇÃO
+  bool WantsScoringUpdates() { return( false ); } // ALTERE PARA TRUE PARA HABILITAR O EXEMPLO DE PONTUAÇÃO!
   void UpdateScoring( const ScoringInfoV01 &info );
 
-  // COMMENTARY INPUT
-  bool RequestCommentary( CommentaryRequestInfoV01 &info );  // SEE FUNCTION BODY TO ENABLE COMMENTARY EXAMPLE
+  // ENTRADA DE COMENTÁRIOS
+  bool RequestCommentary( CommentaryRequestInfoV01 &info );  // VEJA O CORPO DA FUNÇÃO PARA HABILITAR O EXEMPLO DE COMENTÁRIO
 
  private:
 
   void WriteToAllExampleOutputFiles( const char * const openStr, const char * const msg );
-  double mET;  // needed for the hardware example
-  bool mEnabled; // needed for the hardware example
+  double mET; // necessário para o exemplo de hardware
+  bool mEnabled; // necessário para o exemplo de hardware
 };
 
 
