@@ -2,4 +2,8 @@
 *.o
 *.exe
 *.dll
+_Example/
+_KnockoutQualifying/
+_StockCarRules/
 .vscode/
+VC11/
