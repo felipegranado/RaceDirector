@@ -17,7 +17,7 @@ extern "C" __declspec( dllexport )
 PluginObjectType __cdecl GetPluginType()               { return( PO_INTERNALS ); }
 
 extern "C" __declspec( dllexport )
-int __cdecl GetPluginVersion()                         { return( 7 ); }  // Funcionalidade do InternalsPluginV07 (se você mudar esse valor de retorno, deve derivar da classe apropriada!)
+int __cdecl GetPluginVersion()                         { return( 7 ); }  // Funcionalidade do InternalsPluginV07 (se voce mudar esse valor de retorno, deve derivar da classe apropriada!)
 
 extern "C" __declspec( dllexport )
 PluginObject * __cdecl CreatePluginObject()            { return( static_cast< PluginObject * >( new RaceDirectorPlugin ) ); }
@@ -30,9 +30,6 @@ void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( static_cast< Ra
 // Classe RaceDirector
 
 FILE* logFile = fopen("RaceDirectorLog.txt", "a");
-
-RaceDirectorPlugin::RaceDirectorPlugin()
-{}
 
 
 void RaceDirectorPlugin::WriteLog( const char * const openStr, const char * const msg )

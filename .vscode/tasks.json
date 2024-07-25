@@ -1,22 +1,28 @@
 {
-    "version": "2.0.0",
-    "tasks": [
-        {
-            "label": "build",
-            "type": "shell",
-            "command": "g++",
-            "args": [
-                "-I",
-                "Include",
-                "-o",
-                "build/output.dll",
-                "Source/*.cpp"
-            ],
-            "group": {
-                "kind": "build",
-                "isDefault": true
-            },
-            "problemMatcher": ["$gcc"]
-        }
-    ]
-}
+	"version": "2.0.0",
+	"tasks": [
+		{
+			"label": "Compilar DLL",
+			"type": "shell",
+			"command": "g++",
+			"args": [
+				"-I",
+				"Include",
+				"-shared",
+				"-o",
+				"RaceDirector.dll",
+				"Source/RaceDirector.cpp"
+			],
+			"options": {
+				"cwd": "${workspaceFolder}"
+			},
+			"problemMatcher": [
+				"$gcc"
+			],
+			"group": {
+				"kind": "build",
+				"isDefault": true
+			}
+		}
+	]
+  }
