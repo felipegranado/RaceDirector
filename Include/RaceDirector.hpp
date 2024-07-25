@@ -6,21 +6,15 @@
 
 class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a função exportada GetPluginVersion() deve retornar 1 se você estiver derivando de InternalsPluginV01, 2 para InternalsPluginV02, etc.
 {
-    protected:
+  public:
 
-    // Construtor/destrutor
-    RaceDirectorPlugin() {}
-    ~RaceDirectorPlugin() {}
+    // SAÍDA DO JOGO
+    long WantsTelemetryUpdates() { return( 1 ); } // ALTERE PARA 1 PARA HABILITAR O EXEMPLO DE TELEMETRIA!
+    void RegistrarVelocidade( const TelemInfoV01 &telem, const VehicleScoringInfoV01 &vehscoring, const ScoringInfoV01 &scoring);
 
-    // log
-    bool mLogging;                        // se queremos habilitar o log
-    char *mLogPath;                       // caminho para gravar os logs
-    FILE *mLogFile;                       // o ponteiro para o arquivo
+  private:
 
-    public:
-
-
-
+    void WriteLog( const char * const openStr, const char * const msg );
 };
 
 
