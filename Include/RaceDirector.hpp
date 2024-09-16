@@ -21,6 +21,13 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     void StartSession();           // session has started
     void EndSession();             // session has ended
 
+    //
+    bool GetCustomVariable( long i, CustomVariableV01 &cvar );
+    void AccessCustomVariable( CustomVariableV01 &cvar );
+    void GetCustomVariableSetting( CustomVariableV01 &cvar, long i, CustomSettingV01 &csetting );
+
+};
+
     // SAIDA DO JOGO
     void RegistrarLimitador( const TelemInfoV01 &telem, const VehicleScoringInfoV01 &vehscoring, const ScoringInfoV01 &scoring);
 
