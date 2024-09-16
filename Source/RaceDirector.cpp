@@ -26,24 +26,30 @@ extern "C" __declspec( dllexport )
 void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( static_cast< RaceDirectorPlugin * >( obj ) ); }
 
 
-
 // Classe RaceDirector
 
 FILE* logFile = fopen("RaceDirectorLog.txt", "a");
 
+void RaceDirectorPlugin::Inicio()
+{
+    logFile = fopen("RaceDirectorLog.txt", "a");
+    if (logFile == NULL)
+    {
+        printf("Erro ao abrir o arquivo de log!\n");
+    }
+}
 
-void RaceDirectorPlugin::WriteLog( const char * const openStr, const char * const msg )
+
+void RaceDirectorPlugin::EscreverLog( const char * const openStr, const char * const msg )
 {
   if( logFile != NULL )
   {
     // Escrever no log
-    char buffer[80];
-    fprintf(logFile, "%s%s\n", buffer, msg);
-
-    fprintf( logFile, "%s\n", msg );
-  } else {
-    // Handle error: arquivo nao pode ser aberto
-    fclose( logFile );
+    fprintf(logFile, "%s\n", msg);
+  }
+  else
+  {
+    printf("Erro ao escrever no arquivo de log!\n");
   }
 }
 
@@ -55,9 +61,20 @@ void RaceDirectorPlugin::RegistrarLimitador( const TelemInfoV01 &telem, const Ve
   if( logFile != NULL )
   {
     // Registra o tempo, o piloto e o status do Limitador
-    fprintf( logFile, "Tempo=%s | Piloto=%s | Limiter=%s\n", scoring.mCurrentET, vehscoring.mDriverName, telem.mSpeedLimiter );
-  } else {
-    // Handle error: arquivo nao pode ser aberto
-    fclose( logFile );
+    fprintf( logFile, "Tempo=%.2f | Piloto=%s | Limiter=%s\n", scoring.mCurrentET, vehscoring.mDriverName, telem.mSpeedLimiter );
   }
+  else
+  {
+    printf("Erro ao registrar informacoes!\n");
+  }
+}
+
+// Função chamada quando o plugin é descarregado ou o servidor é desligado
+void RaceDirectorPlugin::Encerramento()
+{
+    if (logFile != NULL)
+    {
+        fclose(logFile);  // Fechar o arquivo quando o plugin for descarregado
+        logFile = NULL;    // Limpar o ponteiro
+    }
 }
