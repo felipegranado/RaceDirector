@@ -4,9 +4,9 @@
 
 #include "RaceDirector.hpp"
 #include <cstring>
-#include <stdio.h>              // for sample output
 #include <cfloat>
 
+using namespace std;
 
 // plugin information
 
@@ -28,53 +28,68 @@ void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( static_cast< Ra
 
 // Classe RaceDirector
 
-FILE* logFile = fopen("RaceDirectorLog.txt", "a");
-
-void RaceDirectorPlugin::Inicio()
+void RaceDirectorPlugin::EscreverLog()
 {
-    logFile = fopen("RaceDirectorLog.txt", "a");
-    if (logFile == NULL)
+    // Buffer para armazenar o nome do arquivo com data e hora
+    char filename[100];
+
+    // Obter o tempo atual
+    time_t t = time(nullptr);
+    tm* now = localtime(&t);
+
+    // Formatar o nome do arquivo com a data e hora
+    strftime(filename, sizeof(filename), "RD-%Y_%m_%d-%H_%M_%S.txt", now);
+
+    // Abrir o arquivo no modo "append" (acrescentar dados ao final)
+    FILE* logFile = fopen(filename, "a");
+    
+    // Verificar se o arquivo foi aberto com sucesso
+    if (logFile != NULL)
     {
-        printf("Erro ao abrir o arquivo de log!\n");
+        // Escrever a mensagem (msg) no arquivo
+        fprintf(logFile, "%s\n", msg);
+    }
+    else
+    {
+        // Se falhar, imprimir mensagem de erro (opcional)
+        cout << "Erro ao abrir o arquivo de log: " << filename << endl;
     }
 }
 
 
-void RaceDirectorPlugin::EscreverLog( const char * const openStr, const char * const msg )
+void RaceDirectorPlugin::Startup( long version )
 {
-  if( logFile != NULL )
-  {
-    // Escrever no log
-    fprintf(logFile, "%s\n", msg);
-  }
-  else
-  {
-    printf("Erro ao escrever no arquivo de log!\n");
-  }
+    EscreverLog("a", "--- LOG INICIADO (version %.3f) ---", (float) version / 1000.0f);
+}
+
+
+void RaceDirectorPlugin::StartSession()
+{
+    EscreverLog("a", "--- SESSAO INICIADA ---");
+}
+
+
+// Função chamada quando a sessão é encerrada
+void ExampleInternalsPlugin::EndSession()
+{
+    EscreverLog("a", "--- SESSAO ENCERRADA ---");
+}
+
+
+// Função chamada quando o plugin é descarregado ou o servidor é desligado
+void RaceDirectorPlugin::Shutdown()
+{
+    if (logFile != NULL)
+    {
+        EscreverLog("a", "--- LOG ENCERRADO ---");
+        fclose(logFile);  // Fechar o arquivo quando o plugin for descarregado
+        logFile = NULL;    // Limpar o ponteiro
+    }
 }
 
 
 void RaceDirectorPlugin::RegistrarLimitador( const TelemInfoV01 &telem, const VehicleScoringInfoV01 &vehscoring, const ScoringInfoV01 &scoring)
 {
-  // Use the incoming data, for now I'll just write some of it to a file to a) make sure it
-  // is working, and b) explain the coordinate system a little bit (see header for more info)
-  if( logFile != NULL )
-  {
     // Registra o tempo, o piloto e o status do Limitador
-    fprintf( logFile, "Tempo=%.2f | Piloto=%s | Limiter=%s\n", scoring.mCurrentET, vehscoring.mDriverName, telem.mSpeedLimiter );
-  }
-  else
-  {
-    printf("Erro ao registrar informacoes!\n");
-  }
-}
-
-// Função chamada quando o plugin é descarregado ou o servidor é desligado
-void RaceDirectorPlugin::Encerramento()
-{
-    if (logFile != NULL)
-    {
-        fclose(logFile);  // Fechar o arquivo quando o plugin for descarregado
-        logFile = NULL;    // Limpar o ponteiro
-    }
+    EscreverLog( "a", "Tempo=%.2f | Piloto=%s | Limiter=%d\n", scoring.mCurrentET, vehscoring.mDriverName, (int) telem.mSpeedLimiter  );
 }
