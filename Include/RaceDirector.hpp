@@ -22,9 +22,9 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     void EndSession();             // session has ended
 
     //
-    bool GetCustomVariable( long i, CustomVariableV01 &cvar );
-    void AccessCustomVariable( CustomVariableV01 &cvar );
-    void GetCustomVariableSetting( CustomVariableV01 &cvar, long i, CustomSettingV01 &csetting );
+    bool GetCustomVariable( long i, CustomVariableV01 &var );
+    void AccessCustomVariable( CustomVariableV01 &var );
+    void GetCustomVariableSetting( CustomVariableV01 &var, long i, CustomSettingV01 &setting );
 
 };
 
