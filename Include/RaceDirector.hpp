@@ -12,14 +12,27 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
   public:
 
     // Construtor / Destrutor
-    ExampleInternalsPlugin() {}
-    ~ExampleInternalsPlugin() {}
+    RaceDirectorPlugin() {}
+    ~RaceDirectorPlugin() {}
+
+  // These are the functions derived from base class InternalsPlugin
+    // that can be implemented.
+    void Startup( long version );  // game startup
+    void Shutdown();               // game shutdown
 
     void EnterRealtime();          // entering realtime
     void ExitRealtime();           // exiting realtime
 
     void StartSession();           // session has started
     void EndSession();             // session has ended
+
+    // GAME OUTPUT
+    long WantsTelemetryUpdates() { return( 1 ); } // CHANGE TO 1 TO ENABLE TELEMETRY EXAMPLE!
+    void UpdateTelemetry( const TelemInfoV01 &info );
+
+    // SCORING OUTPUT
+    bool WantsScoringUpdates() { return( false ); } // CHANGE TO TRUE TO ENABLE SCORING EXAMPLE!
+    void UpdateScoring( const ScoringInfoV01 &info );
 
     //
     bool GetCustomVariable( long i, CustomVariableV01 &var );
