@@ -1,0 +1,3 @@
+﻿  Log.cpp
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\Log.cpp(72,12): warning C4552: '-': o resultado da expressão não é usado
+  RaceDirector.vcxproj -> C:\Users\felip\source\repos\RaceDirector\x64\Debug\RaceDirector.dll
