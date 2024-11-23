@@ -1,0 +1,23 @@
+﻿  Log.cpp
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.hpp(54,131): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+  (compilando o arquivo fonte 'Log.cpp')
+  
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.hpp(55,131): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+  (compilando o arquivo fonte 'Log.cpp')
+  
+  RaceDirector.cpp
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.hpp(54,131): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+  (compilando o arquivo fonte 'RaceDirector.cpp')
+  
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.hpp(55,131): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+  (compilando o arquivo fonte 'RaceDirector.cpp')
+  
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(138,30): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(139,30): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+     Criando biblioteca C:\Users\felip\source\repos\RaceDirector\x64\Release\RaceDirector.lib e objeto C:\Users\felip\source\repos\RaceDirector\x64\Release\RaceDirector.exp
+  Gerando código
+  3 of 620 functions ( 0.5%) were compiled, the rest were copied from previous compilation.
+    0 functions were new in current compilation
+    0 functions had inline decision re-evaluated but remain unchanged
+  Finalizada a geração de código
+  RaceDirector.vcxproj -> C:\Users\felip\source\repos\RaceDirector\x64\Release\RaceDirector.dll
