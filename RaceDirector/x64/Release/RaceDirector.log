@@ -1,70 +1,12 @@
-﻿  RaceDirector.cpp
-C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.hpp(58,131): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
-  (compilando o arquivo fonte 'RaceDirector.cpp')
-  
-C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.hpp(59,131): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
-  (compilando o arquivo fonte 'RaceDirector.cpp')
-  
-C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(143,26): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
-C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(144,26): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
-C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\utility(323,17): error C2512: 'PilotoInfo::PilotoInfo': nenhum construtor padrão apropriado disponível
-  (compilando o arquivo fonte 'RaceDirector.cpp')
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\utility(323,17):
-      ao tentar corresponder a lista de argumentos '()'
-      C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\utility(323,17):
-      o contexto de instanciação do modelo (o mais antigo primeiro) é
-          C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.hpp(119,36):
-          consulte a referência à instanciação 'std::unordered_map<int,PilotoInfo,std::hash<int>,std::equal_to<int>,std::allocator<std::pair<const int,PilotoInfo>>>' do modelo da classe que está sendo compilada
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\unordered_map(259,18):
-          ao compilar a função de membro 'PilotoInfo &std::unordered_map<int,PilotoInfo,std::hash<int>,std::equal_to<int>,std::allocator<std::pair<const int,PilotoInfo>>>::operator [](int &&)' do modelo da classe
-              C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(113,40):
-              veja a primeira referência a 'std::unordered_map<int,PilotoInfo,std::hash<int>,std::equal_to<int>,std::allocator<std::pair<const int,PilotoInfo>>>::operator []' em 'RaceDirectorPlugin::UpdateScoring'
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\unordered_map(260,22):
-          consulte a referência à instanciação 'std::pair<std::_List_node<std::pair<const int,PilotoInfo>,std::_Default_allocator_traits<_Alloc>::void_pointer> *,bool> std::_Hash<std::_Umap_traits<_Kty,_Ty,std::_Uhash_compare<_Kty,_Hasher,_Keyeq>,_Alloc,false>>::_Try_emplace<int,>(_Keyty &&)' do modelo que está sendo compilada
-          with
-          [
-              _Alloc=std::allocator<std::pair<const int,PilotoInfo>>,
-              _Kty=int,
-              _Ty=PilotoInfo,
-              _Hasher=std::hash<int>,
-              _Keyeq=std::equal_to<int>,
-              _Keyty=int
-          ]
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xhash(704,49):
-          consulte a referência à instanciação 'std::_List_node_emplace_op2<std::allocator<std::_List_node<std::pair<const int,PilotoInfo>,std::_Default_allocator_traits<_Alloc>::void_pointer>>>::_List_node_emplace_op2<const std::piecewise_construct_t&,std::tuple<_Ty &&>,std::tuple<>>(_Alnode &,const std::piecewise_construct_t &,std::tuple<_Ty &&> &&,std::tuple<> &&)' do modelo que está sendo compilada
-          with
-          [
-              _Alloc=std::allocator<std::pair<const int,PilotoInfo>>,
-              _Ty=int,
-              _Alnode=std::allocator<std::_List_node<std::pair<const int,PilotoInfo>,std::_Default_allocator_traits<std::allocator<std::pair<const int,PilotoInfo>>>::void_pointer>>
-          ]
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\list(585,25):
-          consulte a referência à instanciação 'void std::_Default_allocator_traits<_Alloc>::construct<_Ty,const std::piecewise_construct_t&,std::tuple<int &&>,std::tuple<>>(_Alloc &,_Objty *const ,const std::piecewise_construct_t &,std::tuple<int &&> &&,std::tuple<> &&)' do modelo que está sendo compilada
-          with
-          [
-              _Alloc=std::allocator<std::_List_node<std::pair<const int,PilotoInfo>,std::_Default_allocator_traits<std::allocator<std::pair<const int,PilotoInfo>>>::void_pointer>>,
-              _Ty=std::pair<const int,PilotoInfo>,
-              _Objty=std::pair<const int,PilotoInfo>
-          ]
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xmemory(698,14):
-          consulte a referência à instanciação '_Ty *std::construct_at<_Objty,const std::piecewise_construct_t&,std::tuple<int &&>,std::tuple<>>(_Ty *const ,const std::piecewise_construct_t &,std::tuple<int &&> &&,std::tuple<> &&) noexcept(false)' do modelo que está sendo compilada
-          with
-          [
-              _Ty=std::pair<const int,PilotoInfo>,
-              _Objty=std::pair<const int,PilotoInfo>
-          ]
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\xutility(393,69):
-          consulte a referência à instanciação 'std::pair<const int,PilotoInfo>::pair<_Ty&&,>(std::piecewise_construct_t,std::tuple<_Ty &&>,std::tuple<>)' do modelo que está sendo compilada
-          with
-          [
-              _Ty=int
-          ]
-          C:\Program Files\Microsoft Visual Studio\2022\Community\VC\Tools\MSVC\14.42.34433\include\utility(327,15):
-          consulte a referência à instanciação 'std::pair<const int,PilotoInfo>::pair<std::tuple<_Ty &&>,std::tuple<>,0,>(_Tuple1 &,_Tuple2 &,std::integer_sequence<size_t,0>,std::integer_sequence<size_t>)' do modelo que está sendo compilada
-          with
-          [
-              _Ty=int,
-              _Tuple1=std::tuple<int &&>,
-              _Tuple2=std::tuple<>
-          ]
-  
+﻿  Log.cpp
+  RaceDirector.cpp
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(127,25): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(128,25): warning C4244: '=': conversão de 'double' para 'float', possível perda de dados
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(423,36): warning C4244: '=': conversão de 'long' para 'float', possível perda de dados
+     Criando biblioteca C:\Users\felip\source\repos\RaceDirector\x64\Release\RaceDirector.lib e objeto C:\Users\felip\source\repos\RaceDirector\x64\Release\RaceDirector.exp
+  Gerando código
+  334 of 541 functions (61.7%) were compiled, the rest were copied from previous compilation.
+    174 functions were new in current compilation
+    43 functions had inline decision re-evaluated but remain unchanged
+  Finalizada a geração de código
+  RaceDirector.vcxproj -> C:\Users\felip\source\repos\RaceDirector\x64\Release\RaceDirector.dll

@@ -1,5 +1,7 @@
-#ifndef _RACEDIRECTOR_HPP_
-#define _RACEDIRECTOR_HPP_
+/*
+
+#ifndef _RACEDIRECTOR_HPP
+#define _RACEDIRECTOR_HPP
 
 #include "InternalsPlugin.hpp"  // classe base da qual os objetos de plugin devem derivar
 #include <array>
@@ -14,12 +16,25 @@
 using namespace std;
 namespace fsm = filesystem;
 
+
+struct StartControl {
+    int mID;
+    string mNome;
+    // float mVelMPH;
+    float mVelKPH;
+    int mMarcha;
+    int mLimitador;
+    bool mEmPit;
+    // bool mPenalty;
+};
+
+
 struct PilotoInfo {
 
     // VehicleScoringInfoV01
     int mIndex;
     int mID;
-    string mPiloto;
+    string mNome;
     string mVeiculo;
     string mClasse;
     bool mEmPit;
@@ -41,10 +56,15 @@ struct PilotoInfo {
 
     // TrackRulesV01
 
+    void AttTelemetria(const TelemInfoV01& tlm) {
+        mID = tlm.mID;
+        mVelKPH = sqrt(tlm.mLocalVel.x * tlm.mLocalVel.x + tlm.mLocalVel.y * tlm.mLocalVel.y + tlm.mLocalVel.z * tlm.mLocalVel.z) * 2.23694;
+        mVelKPH = sqrt(tlm.mLocalVel.x * tlm.mLocalVel.x + tlm.mLocalVel.y * tlm.mLocalVel.y + tlm.mLocalVel.z * tlm.mLocalVel.z) * 3.6;
+        mMarcha = tlm.mGear;
+        mLimitador = tlm.mSpeedLimiter;
+    }
 
-    PilotoInfo(int id, string piloto, string veiculo, string classe, bool pit)
-        : mID(id), mPiloto(piloto), mVeiculo(veiculo), mClasse(classe), mEmPit(pit) {}
-
+    
     void AttScoring(int i, const VehicleScoringInfoV01& vsi) {
         mIndex = i;
         mID = vsi.mID;
@@ -52,13 +72,6 @@ struct PilotoInfo {
         mVeiculo = vsi.mVehicleName;
         mClasse = vsi.mVehicleClass;
         mEmPit = vsi.mInPits;
-    }
-
-    void AttTelemetria(const TelemInfoV01& tlm) {
-        mVelKPH = sqrt(tlm.mLocalVel.x * tlm.mLocalVel.x + tlm.mLocalVel.y * tlm.mLocalVel.y + tlm.mLocalVel.z * tlm.mLocalVel.z) * 2.23694;
-        mVelKPH = sqrt(tlm.mLocalVel.x * tlm.mLocalVel.x + tlm.mLocalVel.y * tlm.mLocalVel.y + tlm.mLocalVel.z * tlm.mLocalVel.z) * 3.6;
-        mMarcha = tlm.mGear;
-        mLimitador = tlm.mSpeedLimiter;
     }
 
     void AttMultiSessao(const MultiSessionParticipantV01& msp) {
@@ -74,8 +87,8 @@ struct PilotoInfo {
         mAutorizado = msp.mServerScored;
         mPosicaoLargada = msp.mGridPosition;
     }
+    
 };
-
 
 
 class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao exportada GetPluginVersion() deve retornar 1 se voce estiver derivando de InternalsPluginV01, 2 para InternalsPluginV02, etc.
@@ -116,17 +129,20 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
 
   protected:
 
-    unordered_map<int, PilotoInfo> mPilotos2;
+    // unordered_map<int, PilotoInfo> mPilotos2;
 
     long mMaxPilotos;
     long mNumPilotos;
-    // vector<PilotoInfo> mPilotos;
+    vector<PilotoInfo> mPilotos;
 
-    bool atualizaTelemetria;
+    StartControl* mStartControl;
+
+    int atualizaTelemetria;
+    int telemetriaPilotos;
+
     unsigned char faseSessao;
 
     bool aplicaPenalidade;
-
 
     int rdIdioma = 0;
     int rdPenalidade = 0;
@@ -134,7 +150,7 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     // Custom variables
     int mLigado;
     int mLimitador;
-    int mMarcha;
+    int mMarchaLimite;
     double mMaxVelKPH;
     int mPenalidade;
 
@@ -143,11 +159,107 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     int mLog;
     string mLocal;
 
-    void StartControl(PilotoInfo& piloto);
+    const string& ProcurarPilotoPorID(int id) const;
+
+    // void StartControl(PilotoInfo& piloto);
 
     void NomeArquivo();
     void EscreverLog(const string msg) const;
 };
 
+#endif // _RACEDIRECTOR_HPP
 
-#endif // _RACEDIRECTOR_HPP_
+*/
+
+
+#ifndef _RACEDIRECTOR_HPP
+#define _RACEDIRECTOR_HPP
+
+#include "InternalsPlugin.hpp"  // classe base da qual os objetos de plugin devem derivar
+#include <chrono>
+#include <fstream>
+#include <string>
+#include <unordered_map>
+#include <vector>
+
+using namespace std;
+
+
+struct PilotoInfo {
+
+    // VehicleScoringInfoV01
+    int mID;
+    string mNome;
+    string mVeiculo;
+    string mClasse;
+    bool mEmPit;
+
+    // TelemInfoV01
+    float mVelMPH;
+    float mVelKPH;
+    int mMarcha;
+    unsigned char mLimitador;
+
+    // Penalizacao
+    int mPenalidade;
+};
+
+class RaceDirectorPlugin : public InternalsPluginV07 {
+
+private:
+
+    ofstream logFile;
+    unordered_map<int, PilotoInfo> pilotos;  // Lista de pilotos
+    int mFase;                           // Bandeira verde detectada
+    int mSessao;                           // Sessão de corrida ativa
+    int mTelemetria;
+
+
+    // Custom Plugin Variable
+    int mLog;
+
+    bool mStartControl;
+    int mStartControlGear;          // Marcha permitida na largada
+    float mStartControlSpeedKPH;      // Velocidade máxima permitida na largada
+    int mStartControlLimiter;      // Limitador permitido?
+    int mStartControlPenalty;
+
+    // Environment
+    string mLocal;
+
+    // Message
+    string mMensagem;
+
+
+    // void ApplyPenalty(int vehicleID);           // Aplicar penalidade
+    void NomeArquivo();
+    void EscreverLog(const string msg) const;
+
+public:
+
+    RaceDirectorPlugin();
+    // ~RaceDirectorPlugin();
+
+    void SetEnvironment(const EnvironmentInfoV01& info);
+
+    // Métodos principais
+    void StartSession() override;
+    // void EndSession() override;
+
+    bool WantsScoringUpdates() { return(true); }
+    void UpdateScoring(const ScoringInfoV01& info);
+
+    long WantsTelemetryUpdates();
+    void UpdateTelemetry(const TelemInfoV01& info);
+
+
+    bool WantsToDisplayMessage(MessageInfoV01& msgInfo);
+
+    // Variáveis customizáveis pelo usuário
+    bool GetCustomVariable(long i, CustomVariableV01& var);
+    void AccessCustomVariable(CustomVariableV01& var);
+    void GetCustomVariableSetting(CustomVariableV01& var, long i, CustomSettingV01& setting);
+
+};
+
+#endif // _RACEDIRECTOR_HPP

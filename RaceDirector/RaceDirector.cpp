@@ -6,10 +6,6 @@
 
 #include "RaceDirector.hpp"
 
-
-using namespace std;
-namespace fsm = filesystem;
-
 // plugin information
 
 extern "C" __declspec( dllexport )
@@ -30,27 +26,34 @@ void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( static_cast< Ra
 
 // StartControl sc;
 
+
 RaceDirectorPlugin::RaceDirectorPlugin()
 {
-    mNumPilotos = 0;
-    mMaxPilotos = 0;
+    // mNumPilotos = 0;
+    // mMaxPilotos = 0;
     // mPiloto = NULL;
 
-    faseSessao = 0;
+    // mStartControl = NULL;
 
-    atualizaTelemetria = false;
+    mFase = 0;
+    mSessao = 0;
+
+    mStartControl = 0;
+    mStartControlGear = 0;
+    mStartControlSpeedKPH = 0;
+    mStartControlLimiter = 0;
+    mStartControlPenalty = -3;
+
+    // aplicaPenalidade = false;
+
+    // telemetriaPilotos = 0;
 }
 
 
 void RaceDirectorPlugin::SetEnvironment(const EnvironmentInfoV01& info)
 {
     string caminhoBase = info.mPath[0];
-   mLocal = caminhoBase + "Log\\RaceDirector\\";
-
-    if (!fsm::exists(mLocal))
-    {
-        fsm::create_directories(mLocal);
-    }
+    mLocal = caminhoBase + "Log\\RaceDirector\\";
 }
 
 
@@ -61,10 +64,10 @@ void RaceDirectorPlugin::StartSession()
     EscreverLog( "Local do arquivo: " + mLocal );
 
     EscreverLog( 
-        "Controle de largada: " + to_string(mLigado) +
-        "\t| Marcha: " + to_string(mMarcha) +
-        "\t| Limitador: " + to_string(mLimitador) +
-        "\t| Vel Maxima : " + to_string(mMaxVelKPH) +
+        "Controle de largada: " + to_string(mStartControl) +
+        "\t| Marcha: " + to_string(mStartControlGear) +
+        "\t| Limitador: " + to_string(mStartControlLimiter) +
+        "\t| Vel Maxima : " + to_string(mStartControlSpeedKPH) +
         "\n"
     );
 
@@ -85,48 +88,29 @@ void RaceDirectorPlugin::EndSession()
 
 void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
 {
+    // mNumPilotos = info.mNumVehicles;
+    // mMaxPilotos = info.mMaxPlayers;
+
     if (info.mSession >= 10)
     {
-        mNumPilotos = info.mNumVehicles;
-        mMaxPilotos = info.mMaxPlayers;
-
-        if (faseSessao != info.mGamePhase) //  && info.mGamePhase == 5
+        if (mFase != info.mGamePhase) //  && info.mGamePhase == 5
         {
-            faseSessao = info.mGamePhase;
+            mFase = info.mGamePhase;
+            mTelemetria = 1;
 
-            // mPilotos.reserve(info.mMaxPlayers);
-
-            ostringstream oss;
-            oss << "Pista: " << info.mTrackName
-                << "\t| Pilotos: " << info.mNumVehicles
-                << "\t| Sessao: " << info.mSession
-                << "\t| Fase: " << to_string(info.mGamePhase)
-                << "\t| Tempo: " << info.mCurrentET;
-            EscreverLog(oss.str());
-
-            
             for (int i = 0; i < info.mNumVehicles; ++i)
             {
                 const VehicleScoringInfoV01& vsi = info.mVehicle[i];
 
-                if (mPilotos2.find(vsi.mID) == mPilotos2.end()) {
-                    mPilotos2[vsi.mID] = PilotoInfo(vsi.mID, vsi.mDriverName, vsi.mVehicleName, vsi.mVehicleClass, vsi.mInPits);
+                if (pilotos.find(vsi.mID) == pilotos.end()) {
+                    PilotoInfo pilot;
+                    pilot.mID = vsi.mID;
+                    pilot.mNome = vsi.mDriverName;
+                    pilotos[vsi.mID] = pilot;
+
+                    logFile << "Registered Driver: [" << pilot.mNome << "]\n";
                 }
-
-                /*
-                PilotoInfo piloto;
-                piloto.mIndex = i;
-                piloto.mID = vsi.mID;
-                piloto.mPiloto = vsi.mDriverName;
-                piloto.mVeiculo = vsi.mVehicleName;
-                piloto.mClasse = vsi.mVehicleClass;
-                piloto.mEmPit = vsi.mInPits;
-
-                mPilotos.push_back(piloto);
-                */
             }
-
-            atualizaTelemetria = true;
         }
     }
 }
@@ -134,72 +118,66 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
 
 void RaceDirectorPlugin::UpdateTelemetry(const TelemInfoV01& info)
 {
-    double velMPH = sqrt(info.mLocalVel.x * info.mLocalVel.x + info.mLocalVel.y * info.mLocalVel.y + info.mLocalVel.z * info.mLocalVel.z) * 2.23694;
-    double velKPH = sqrt(info.mLocalVel.x * info.mLocalVel.x + info.mLocalVel.y * info.mLocalVel.y + info.mLocalVel.z * info.mLocalVel.z) * 3.6;
-    
-    if (mPilotos2.find(info.mID) != mPilotos2.end()) {
-        PilotoInfo& piloto = mPilotos2[info.mID];
+    double mVelKPH = sqrt(info.mLocalVel.x * info.mLocalVel.x + info.mLocalVel.y * info.mLocalVel.y + info.mLocalVel.z * info.mLocalVel.z) * 2.23694;
+    double mVelMPH = sqrt(info.mLocalVel.x * info.mLocalVel.x + info.mLocalVel.y * info.mLocalVel.y + info.mLocalVel.z * info.mLocalVel.z) * 3.6;
+
+    if (mFase == 5) {
+        auto& pilot = pilotos[info.mID];
+
+        pilot.mVelMPH = mVelKPH;
+        pilot.mVelKPH = mVelMPH;
+        pilot.mMarcha = info.mGear;
+        pilot.mLimitador = info.mSpeedLimiter;
+
+    }
+
+    /*
+    if (mMaxVelKPH != 0 && sc.mVelKPH > mMaxVelKPH) {
+        sc.mPenalty = true;
+    }
+    else if (mMarchaLimite != 0 && sc.mMarcha > mMarchaLimite) {
+        sc.mPenalty = true;
+    }
+    else if (mLimitador != 0 && sc.mLimitador != mLimitador) {
+        sc.mPenalty = true;
+    }
+    else {
+        sc.mPenalty = false;
+    }
+
+    ostringstream oss;
+    oss << sc.mID << "\t| "
+        << sc.mVelMPH << "\t| "
+        << sc.mVelKPH << "\t| "
+        << sc.mMarcha << "\t| "
+        << sc.mLimitador;
+    EscreverLog(oss.str());
+
+    if (mPilotos.find(info.mID) != mPilotos.cend()) {
+        PilotoInfo& piloto = mPilotos[info.mID];
 
         piloto.mVelMPH = velMPH;
         piloto.mVelKPH = velKPH;
         piloto.mMarcha = info.mGear;
         piloto.mLimitador = info.mSpeedLimiter;
-
-        ostringstream oss;
-        oss << piloto.mID << "\t| "
-            << piloto.mVeiculo << "\t| "
-            << piloto.mVelKPH << "\t| "
-            << piloto.mMarcha << "\t| "
-            << piloto.mLimitador;
-        EscreverLog(oss.str());
-
-        StartControl(piloto);
     }
 
     
-    /*
-    for (long i = 0; i < mNumPilotos; ++i) {
-        
-        PilotoInfo piloto;
-
-        if (piloto.mIndex == i)
-        {
-            piloto.mVelMPH = velMPH;
-            piloto.mVelKPH = velKPH;
-            piloto.mMarcha = info.mGear;
-            piloto.mLimitador = info.mSpeedLimiter;
-
-            ostringstream oss;
-            oss << piloto.mIndex << "\t| "
-                << piloto.mID << "\t| "
-                << piloto.mPiloto << "\t| "
-                << piloto.mVeiculo << "\t| "
-                << piloto.mClasse << "\t| "
-                << piloto.mEmPit << "\t| "
-                << piloto.mVelKPH << "\t| "
-                << piloto.mMarcha << "\t| "
-                << piloto.mLimitador;
-
-            EscreverLog(oss.str());
-        }
-
-            
-            
     }
     */
 }
 
 
-long RaceDirectorPlugin::WantsTelemetryUpdates()
-{
-    if (atualizaTelemetria)
+long RaceDirectorPlugin::WantsTelemetryUpdates() {
+
+    if (1 == mTelemetria)
     {
-        atualizaTelemetria = false;
+        mTelemetria = 0;
         return(2);
     }
     else
     {
-        return (0);
+        return(0);
     }
 }
 
@@ -222,6 +200,7 @@ bool RaceDirectorPlugin::WantsToDisplayMessage(MessageInfoV01& msgInfo)
 }
 
 
+/*
 bool RaceDirectorPlugin::WantsMultiSessionRulesAccess()
 {
     return true;
@@ -245,8 +224,8 @@ bool RaceDirectorPlugin::AccessMultiSessionRules(MultiSessionRulesV01& info)
     {
         const MultiSessionParticipantV01& msp = info.mParticipant[i];
 
-        if (mPilotos2.find(msp.mID) != mPilotos2.end()) {
-            PilotoInfo& piloto = mPilotos2[msp.mID];
+        if (mPilotos.cbegin() != mPilotos.cend()) {
+            PilotoInfo& piloto = mPilotos[msp.mID];
 
             piloto.mTreinoMelhorTempo = msp.mBestPracticeTime;
             piloto.mClassIndice = msp.mQualParticipantIndex;
@@ -266,7 +245,7 @@ bool RaceDirectorPlugin::AccessMultiSessionRules(MultiSessionRulesV01& info)
 
     return true;
 }
-
+*/
 
 bool RaceDirectorPlugin::GetCustomVariable(long i, CustomVariableV01& var)
 {
@@ -371,24 +350,6 @@ void RaceDirectorPlugin::GetCustomVariableSetting(CustomVariableV01& var, long i
         else
             strcpy_s(setting.mName, "True");
     }
-    else if (0 == _stricmp(var.mCaption, "Language"))
-    {
-        if (0 == i)
-            strcpy_s(setting.mName, "en");
-        else if (1 == i)
-            strcpy_s(setting.mName, "pt");
-    }
-    else if (0 == _stricmp(var.mCaption, "Penalty"))
-    {
-        if (-3 == i)
-            sprintf_s(setting.mName, "Do Nothing");
-        else if (-2 == i)
-            sprintf_s(setting.mName, "Longest Line");
-        else if (-1 == i)
-            sprintf_s(setting.mName, "Drive-Thru");
-        else if (0 <= i)
-            sprintf_s(setting.mName, "Stop&Go");
-    }
     else if (0 == _stricmp(var.mCaption, "StartControl"))
     {
         if (i == 0)
@@ -401,7 +362,7 @@ void RaceDirectorPlugin::GetCustomVariableSetting(CustomVariableV01& var, long i
         if (i == 0)
             sprintf_s(setting.mName, "Disabled");
         else if (i > 0)
-            sprintf_s(setting.mName, "%d", mMarcha);
+            sprintf_s(setting.mName, "%d", mStartControlGear);
     }
     else if (0 == _stricmp(var.mCaption, "StartControlLimiter"))
     {
@@ -415,7 +376,7 @@ void RaceDirectorPlugin::GetCustomVariableSetting(CustomVariableV01& var, long i
         if (i == 0)
             sprintf_s(setting.mName, "Disabled");
         else if (i > 0)
-            sprintf_s(setting.mName, "%.3f", mMaxVelKPH);
+            sprintf_s(setting.mName, "%.3f", mStartControlSpeedKPH);
     }
     else if (0 == _stricmp(var.mCaption, "StartControlPenalty"))
     {
@@ -426,7 +387,7 @@ void RaceDirectorPlugin::GetCustomVariableSetting(CustomVariableV01& var, long i
         else if (i == -1)
             sprintf_s(setting.mName, "Drive-Thru");
         else if (i >= 0 && i <= 60)
-            sprintf_s(setting.mName, "Stop&Go %ds", mPenalidade);
+            sprintf_s(setting.mName, "Stop&Go %ds", mStartControlPenalty);
     }
 }
 
@@ -441,38 +402,30 @@ void RaceDirectorPlugin::AccessCustomVariable(CustomVariableV01& var)
     {
         mLog = var.mCurrentSetting;
     }
-    else if (0 == _stricmp(var.mCaption, "Language"))
-    {
-        rdIdioma = var.mCurrentSetting;
-    }
-    else if (0 == _stricmp(var.mCaption, "Penalty"))
-    {
-        rdPenalidade = var.mCurrentSetting;
-    }
     else if (0 == _stricmp(var.mCaption, "StartControl"))
     {
         /// scControleLargada = var.mCurrentSetting;
-        mLigado = var.mCurrentSetting;
+        mStartControl = var.mCurrentSetting;
     }
     else if (0 == _stricmp(var.mCaption, "StartControlGear"))
     {
         // scMarcha = var.mCurrentSetting;
-        mMarcha = var.mCurrentSetting;
+        mStartControlGear = var.mCurrentSetting;
     }
     else if (0 == _stricmp(var.mCaption, "StartControlLimiter"))
     {
         // scLimitador = var.mCurrentSetting;
-        mLimitador = var.mCurrentSetting;
+        mStartControlLimiter = var.mCurrentSetting;
     }
     else if (0 == _stricmp(var.mCaption, "StartControlMaxSpeedKPH"))
     {
         // scMaxVelKPH = var.mCurrentSetting;
-        mMaxVelKPH = var.mCurrentSetting;
+        mStartControlSpeedKPH = var.mCurrentSetting;
     }
     else if (0 == _stricmp(var.mCaption, "StartControlPenalty"))
     {
         // scPenalidade = var.mCurrentSetting;
-        mPenalidade = var.mCurrentSetting;
+        mStartControlPenalty = var.mCurrentSetting;
     }
 }
 
@@ -504,17 +457,17 @@ void RaceDirectorPlugin::NomeArquivo()
 
 
 // Escrever o Log no arquivo criado
-void RaceDirectorPlugin::EscreverLog(const string msg) const
-{
+void RaceDirectorPlugin::EscreverLog(const string msg) const {
+
     ofstream arquivo(mLocal, std::ios::app);
 
-    if (arquivo.is_open())
-    {
+    if (arquivo.is_open()) {
+        
         arquivo << msg << endl;
         // clog << "TESTE DE MENSAGEM DE LOG" << endl;
     }
-    else
-    {
+    else {
+
         // cerr << "TESTE DE LOG DE ERRO" << endl;
     }
 
@@ -531,11 +484,11 @@ void RaceDirectorPlugin::EscreverLog(const string msg) const
     */
 }
 
-
-void RaceDirectorPlugin::StartControl(PilotoInfo& piloto) {
+/*
+void RaceDirectorPlugin::StartControl(TelemInfoV01& info) {
     aplicaPenalidade = false;
 
-    if (piloto.mEmPit == 0) {
+    if (info.Pit == 0) {
 
         if (piloto.mVelKPH > mMaxVelKPH) {
             aplicaPenalidade = true;
@@ -554,7 +507,8 @@ void RaceDirectorPlugin::StartControl(PilotoInfo& piloto) {
 
     if (aplicaPenalidade) {
         ostringstream oss;
-        oss << "/ addpenalty " << mPenalidade << " " << piloto.mPiloto;
+        oss << "/ addpenalty " << mPenalidade << " " << piloto.mNome;
         mMensagem = oss.str();
     }
 }
+*/
