@@ -1,3 +1,3 @@
-﻿  Log.cpp
-C:\Users\felip\source\repos\RaceDirector\RaceDirector\Log.cpp(72,12): warning C4552: '-': o resultado da expressão não é usado
-  RaceDirector.vcxproj -> C:\Users\felip\source\repos\RaceDirector\x64\Debug\RaceDirector.dll
+﻿  RaceDirector.cpp
+C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(1,1): warning C4335: formato de arquivo Mac detectado: converta o arquivo fonte para formato DOS ou UNIX
+  RaceDirector.vcxproj -> C:\Users\felip\Source\Repos\RaceDirector\x64\Debug\RaceDirector.dll

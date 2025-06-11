@@ -20,12 +20,10 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="InternalsPlugin.hpp" />
-    <ClInclude Include="Log.hpp" />
     <ClInclude Include="PluginObjects.hpp" />
     <ClInclude Include="RaceDirector.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Log.cpp" />
     <ClCompile Include="RaceDirector.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
