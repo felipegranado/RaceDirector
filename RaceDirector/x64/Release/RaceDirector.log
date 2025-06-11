@@ -1,6 +1,6 @@
 ﻿  RaceDirector.cpp
 C:\Users\felip\source\repos\RaceDirector\RaceDirector\RaceDirector.cpp(1,1): warning C4335: formato de arquivo Mac detectado: converta o arquivo fonte para formato DOS ou UNIX
   Gerando código
-  Finalizada a geração de código
   Incremental LTCG not supported for -Od component, build without incremental LTCG.
+  Finalizada a geração de código
   RaceDirector.vcxproj -> C:\Users\felip\Source\Repos\RaceDirector\x64\Release\RaceDirector.dll

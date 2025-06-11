@@ -1,5 +1,5 @@
-#ifndef _RACEDIRECTOR_HPP_
-#define _RACEDIRECTOR_HPP_
+#ifndef _RACEDIRECTOR_H_
+#define _RACEDIRECTOR_H_
 
 #include "InternalsPlugin.hpp"  // classe base da qual os objetos de plugin devem derivar
 #include <string>
@@ -13,9 +13,9 @@ struct PilotoInfo {
     // VehicleScoringInfoV01
     int mIndex;
     long mID;
-    std::string mNome;
-    std::string mVeiculo;
-    std::string mClasse;
+    string mNome;
+    string mVeiculo;
+    string mClasse;
     bool mEmPit;
 
     // TelemInfoV01
@@ -38,32 +38,32 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
 
 
     // These are the functions derived from base class InternalsPlugin that can be implemented.
-    void StartSession() override;              // session has started
+    void StartSession();              // session has started
     // void EndSession();             // session has ended
 
     // telemetria
-    long WantsTelemetryUpdates() override;
-    void UpdateTelemetry( const TelemInfoV01 &info ) override;
+    long WantsTelemetryUpdates();
+    void UpdateTelemetry( const TelemInfoV01 &info );
 
     // pontuacao
-    bool WantsScoringUpdates() override { return(true); }
-    void UpdateScoring( const ScoringInfoV01 &info ) override;
+    bool WantsScoringUpdates() { return(true); }
+    void UpdateScoring( const ScoringInfoV01 &info );
 
     // mensagem
-    bool WantsToDisplayMessage(MessageInfoV01& msgInfo) override;
+    bool WantsToDisplayMessage(MessageInfoV01 &msgInfo);
 
     // ambiente
-    void SetEnvironment(const EnvironmentInfoV01& info) override;
+    void SetEnvironment(const EnvironmentInfoV01& info);
 
     // variaveis personalizadas
-    bool GetCustomVariable( long i, CustomVariableV01 &var ) override;
-    void AccessCustomVariable( CustomVariableV01 &var ) override;
-    void GetCustomVariableSetting( CustomVariableV01 &var, long i, CustomSettingV01 &setting ) override;
+    bool GetCustomVariable( long i, CustomVariableV01 &var );
+    void AccessCustomVariable( CustomVariableV01 &var );
+    void GetCustomVariableSetting( CustomVariableV01 &var, long i, CustomSettingV01 &setting );
 
 
   private:
 
-    std::vector<PilotoInfo> mPilotos;
+    vector<PilotoInfo> mPilotos;
     
     long mNumPilotos;
     long mMaxPilotos;
@@ -72,14 +72,13 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     bool mAtualizaTelemetria;
 
     bool mLogHabilitado;
-    std::string mLogLocal;
-    std::ofstream mLogArquivo;
+    string mLogLocal;
+    ofstream mLogArquivo;
 
     bool mAplicaPenalidade;
-    std::string mMensagem;
+    string mMensagem;
 
-    int rdIdioma = 0;
-    int rdPenalidade = 0;
+    int mIdioma;
 
     // Custom variables
     bool mStartControlEnabled;
@@ -89,7 +88,7 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     int mStartControlPenalty;
 
     void GerarLog();
-    void EscreverLog(const std::string& msg);
+    void EscreverLog(const string &msg);
     void CheckStartControl();
     // void CheckMulticlassQualifying();
     // void CheckFullCourseYellow();
