@@ -1,12 +1,16 @@
-#ifndef _RACEDIRECTOR_H_
-#define _RACEDIRECTOR_H_
+#ifndef _RACEDIRECTOR_HPP_
+#define _RACEDIRECTOR_HPP_
 
 #include "InternalsPlugin.hpp"  // classe base da qual os objetos de plugin devem derivar
+#include <filesystem>
+#include <fstream>
+#include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
-#include <fstream>
-#include <iomanip>
-#include <sstream>
+
+using namespace std;
+namespace fs = filesystem;
 
 struct PilotoInfo {
 
@@ -34,7 +38,7 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
   public:
 
     RaceDirectorPlugin();
-    ~RaceDirectorPlugin();
+    //~RaceDirectorPlugin();
 
 
     // These are the functions derived from base class InternalsPlugin that can be implemented.
@@ -61,19 +65,17 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     void GetCustomVariableSetting( CustomVariableV01 &var, long i, CustomSettingV01 &setting );
 
 
-  private:
+  protected:
 
     vector<PilotoInfo> mPilotos;
-    
     long mNumPilotos;
     long mMaxPilotos;
     
     unsigned char mFase;
     bool mAtualizaTelemetria;
 
-    bool mLogHabilitado;
+    bool mLogEnabled;
     string mLogLocal;
-    ofstream mLogArquivo;
 
     bool mAplicaPenalidade;
     string mMensagem;
@@ -88,8 +90,8 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     int mStartControlPenalty;
 
     void GerarLog();
-    void EscreverLog(const string &msg);
-    void CheckStartControl();
+    void EscreverLog(const string msg) const;
+    void CheckStartControl(PilotoInfo& piloto);
     // void CheckMulticlassQualifying();
     // void CheckFullCourseYellow();
 };

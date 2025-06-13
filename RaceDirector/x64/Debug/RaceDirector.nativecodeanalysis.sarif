@@ -7,8 +7,8 @@
       "tool": {
         "driver": {
           "name": "PREfast",
-          "fullName": "PREfast Code Analysis",
-          "version": "14.42.34433.0",
+          "fullName": "MSVC Code Analysis",
+          "version": "14.44.35209.0",
           "informationUri": "https://aka.ms/cpp/ca"
         }
       },
@@ -26,39 +26,7 @@
             "analysisTarget"
           ],
           "hashes": {
-            "sha-256": "7caa2da921718e111e5e427063ab201398890e8889501857167f5954c7802f39"
-          }
-        },
-        {
-          "location": {
-            "uri": "file:///c:/users/felip/source/repos/racedirector/racedirector/racedirector.hpp"
-          },
-          "hashes": {
-            "sha-256": "18a1aec8aa7a7bdbbfcb8715e0367bb1f21a184517de82319bcef2254353377c"
-          }
-        },
-        {
-          "location": {
-            "uri": "file:///c:/users/felip/source/repos/racedirector/racedirector/internalsplugin.hpp"
-          },
-          "hashes": {
-            "sha-256": "de6a401fd14cb783244dfdbaee88886fec401027d19fd68286e7702f470b5e07"
-          }
-        },
-        {
-          "location": {
-            "uri": "file:///c:/users/felip/source/repos/racedirector/racedirector/pluginobjects.hpp"
-          },
-          "hashes": {
-            "sha-256": "0eefc763590642b614f8765243727dfe858fe8a0072ec62ce99c8d6f45edc4e5"
-          }
-        },
-        {
-          "location": {
-            "uri": "file:///c:/users/felip/source/repos/racedirector/racedirector/log.hpp"
-          },
-          "hashes": {
-            "sha-256": "f2b782e21a9c385a33f7230b5e1194287bbcc3dc9e0a254be4eeef29b86aea7c"
+            "sha-256": "0742ff2048e1f86603d55c08e87318ad2361f14081d124b1b175eb6708b64907"
           }
         }
       ]
