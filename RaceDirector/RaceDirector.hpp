@@ -30,7 +30,8 @@ struct PilotoInfo {
     unsigned char mLimitador;
 
 	double mMelhorVolta;               // best lap time in current session
- 
+    bool mJaLogado = false;
+
 };
 
 

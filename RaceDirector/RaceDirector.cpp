@@ -97,8 +97,6 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
                 piloto.mLimitador = 0;
 
                 mPilotos.push_back(piloto);
-
-                EscreverLog("ID: " + to_string(piloto.mID) + "\t | Piloto: " + piloto.mNome + "\t| Vel KPH: " + to_string(piloto.mVelKPH) + "\t| Marcha: " + to_string(piloto.mMarcha) + "\t| Limitador: " + to_string(piloto.mLimitador));
             }
 
             if( mFase == 5 ) // Fase de corrida
@@ -153,6 +151,13 @@ void RaceDirectorPlugin::UpdateTelemetry(const TelemInfoV01& info)
                 << "\t| Marcha: " << piloto.mMarcha
                 << "\t| Limitador: " << to_string(piloto.mLimitador);
             */
+
+            if (!piloto.mJaLogado)
+            {
+                EscreverLog("ID: " + to_string(piloto.mID) + "\t | Piloto: " + piloto.mNome + "\t| Vel KPH: " + to_string(piloto.mVelKPH) + "\t| Marcha: " + to_string(piloto.mMarcha) + "\t| Limitador: " + to_string(piloto.mLimitador));
+
+                piloto.mJaLogado = true;
+            }
 
             CheckStartControl(piloto);
         }
