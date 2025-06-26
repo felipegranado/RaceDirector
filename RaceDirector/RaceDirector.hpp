@@ -5,6 +5,7 @@
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -20,7 +21,7 @@ struct PilotoInfo {
     string mNome;
     string mVeiculo;
     string mClasse;
-    bool mEmPit;
+    bool mPit;
 
     // TelemInfoV01
     double mVelMPH;
@@ -79,6 +80,7 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
 
     bool mAplicaPenalidade;
     string mMensagem;
+	queue<string> mFilaMensagens;
 
     int mIdioma;
 

@@ -9,7 +9,7 @@
 // plugin information
 
 extern "C" __declspec( dllexport )
-const char * __cdecl GetPluginName()                   { return( "Race Director - 2025.06.10" ); }
+const char * __cdecl GetPluginName()                   { return( "Race Director - 2025.06.14" ); }
 
 extern "C" __declspec( dllexport )
 PluginObjectType __cdecl GetPluginType()               { return( PO_INTERNALS ); }
@@ -77,15 +77,8 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
         {
             mFase = info.mGamePhase;
 
+            mPilotos.clear(); // <--- IMPORTANTE
             mPilotos.reserve(mMaxPilotos);
-
-            ostringstream oss;
-            oss << "Pista: " << info.mTrackName
-                << "\t| Pilotos: " << info.mNumVehicles
-                << "\t| Sessao: " << info.mSession
-                << "\t| Fase: " << info.mGamePhase
-                << "\t| Tempo: " << info.mCurrentET;
-            EscreverLog(oss.str());
 
             for (int i = 0; i < mNumPilotos; ++i)
             {
@@ -97,11 +90,35 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
                 piloto.mNome = vsi.mDriverName;
                 piloto.mVeiculo = vsi.mVehicleName;
                 piloto.mClasse = vsi.mVehicleClass;
-                piloto.mEmPit = vsi.mInPits;
+                piloto.mPit = vsi.mInPits;
+				piloto.mVelKPH = 0.0;
+				piloto.mVelMPH = 0.0;
+				piloto.mMarcha = 0;
+                piloto.mLimitador = 0;
 
                 mPilotos.push_back(piloto);
+
+                EscreverLog("ID: " + to_string(piloto.mID) + "\t | Piloto: " + piloto.mNome + "\t| Vel KPH: " + to_string(piloto.mVelKPH) + "\t| Marcha: " + to_string(piloto.mMarcha) + "\t| Limitador: " + to_string(piloto.mLimitador));
             }
-            mAtualizaTelemetria = true;
+
+            if( mFase == 5 ) // Fase de corrida
+            {
+                mAtualizaTelemetria = true; // Habilita atualizacoes de telemetria apenas na fase de corrida
+
+                ostringstream oss;
+                oss << "Pista: " << info.mTrackName
+                    << "\t| Pilotos: " << info.mNumVehicles
+                    << "\t| Sessao: " << info.mSession
+                    << "\t| Fase: " << to_string(info.mGamePhase)
+                    << "\t| Tempo: " << info.mCurrentET;
+                EscreverLog(oss.str());
+
+                EscreverLog("---------- CORRIDA INICIADA ----------");
+            }
+            else if (mFase == 6) // Fase de fim de corrida
+            {
+                EscreverLog("---------- CORRIDA FINALIZADA ----------");
+			}
         }
     }
 }
@@ -109,15 +126,7 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
 
 long RaceDirectorPlugin::WantsTelemetryUpdates()
 {
-    if (mAtualizaTelemetria)
-    {
-        mAtualizaTelemetria = false;
-        return(2);
-    }
-    else
-    {
-        return (0);
-    }
+    return mAtualizaTelemetria ? 2 : 0;
 }
 
 
@@ -126,50 +135,51 @@ void RaceDirectorPlugin::UpdateTelemetry(const TelemInfoV01& info)
     double velMPH = sqrt(info.mLocalVel.x * info.mLocalVel.x + info.mLocalVel.y * info.mLocalVel.y + info.mLocalVel.z * info.mLocalVel.z) * 2.23694;
     double velKPH = sqrt(info.mLocalVel.x * info.mLocalVel.x + info.mLocalVel.y * info.mLocalVel.y + info.mLocalVel.z * info.mLocalVel.z) * 3.6;
     
-    for (long i = 0; i < mNumPilotos; ++i) {
-        PilotoInfo piloto;
-
-        if (piloto.mIndex == i)
+    for(auto& piloto : mPilotos)
+    {
+        if (piloto.mID == info.mID)
         {
             piloto.mVelMPH = velMPH;
             piloto.mVelKPH = velKPH;
             piloto.mMarcha = info.mGear;
             piloto.mLimitador = info.mSpeedLimiter;
 
+            /*
             ostringstream oss;
-            oss << piloto.mIndex << "\t| "
-                << piloto.mID << "\t| "
-                << piloto.mNome << "\t| "
-                << piloto.mVeiculo << "\t| "
-                << piloto.mClasse << "\t| "
-                << piloto.mEmPit << "\t| "
-                << piloto.mVelKPH << "\t| "
-                << piloto.mMarcha << "\t| "
-                << piloto.mLimitador;
+			oss << "ID: " << piloto.mID
+                << "\t| Piloto: " << piloto.mNome
+                << "\t| Classe: " << piloto.mClasse
+                << "\t| Vel KPH: " << piloto.mVelKPH
+                << "\t| Marcha: " << piloto.mMarcha
+                << "\t| Limitador: " << to_string(piloto.mLimitador);
+            */
 
-            EscreverLog(oss.str());
+            CheckStartControl(piloto);
         }
-        CheckStartControl(piloto);
-    }
+	}
+	mAtualizaTelemetria = false; // Desabilita atualizacoes de telemetria apos o processamento  
 }
 
 
 bool RaceDirectorPlugin::WantsToDisplayMessage(MessageInfoV01 &msgInfo)
 {
-    if (mMensagem == "")
+    if (!mFilaMensagens.empty())
     {
-        return(false);
+		mMensagem = mFilaMensagens.front();
+		mFilaMensagens.pop(); // Remove a mensagem da fila após obtê-la
+
+        msgInfo.mDestination = 1;
+        msgInfo.mTranslate = 0;
+        strncpy_s(msgInfo.mText, mMensagem.c_str(), sizeof(msgInfo.mText) -1);
+
+        EscreverLog("Mensagem enviada: " + mMensagem);
+
+        return true;
     }
     else
     {
-        msgInfo.mDestination = 1;
-        msgInfo.mTranslate = 0;
-        strcpy_s(msgInfo.mText, mMensagem.c_str());
-
-        EscreverLog("Mensagem enviada: " + mMensagem);
-        mMensagem = ""; // Limpar a mensagem após enviá-la.
-        return(true);
-    }
+        return false; // Retorna false se não houver mensagem para enviar
+	}
 }
 
 
@@ -290,7 +300,7 @@ void RaceDirectorPlugin::GetCustomVariableSetting(CustomVariableV01 &var, long i
         else if (i > 0)
             sprintf_s(setting.mName, "%.3f", mStartControlMaxVelKPH);
     }
-    else if (0 == _stricmp(var.mCaption, "StartControlPenalty"))
+    else if (0 == _stricmp(var.mCaption, "StartControl.Penalty"))
     {
         if (i == -3)
             sprintf_s(setting.mName, "Disabled");
@@ -367,9 +377,7 @@ void RaceDirectorPlugin::EscreverLog(const string msg) const
 
 void RaceDirectorPlugin::CheckStartControl(PilotoInfo& piloto)
 {
-    mAplicaPenalidade = false;
-
-    if (piloto.mEmPit == 0)
+    if (!piloto.mPit && mStartControlEnabled)
     {
         if (piloto.mVelKPH > mStartControlMaxVelKPH)
         {
@@ -389,9 +397,11 @@ void RaceDirectorPlugin::CheckStartControl(PilotoInfo& piloto)
         }
     }
 
-    if (mAplicaPenalidade) {
+    if (mAplicaPenalidade)
+    {
         ostringstream oss;
-        oss << "/ addpenalty " << mStartControlPenalty << " " << piloto.mNome;
-        mMensagem = oss.str();
+        oss << "/addpenalty " << mStartControlPenalty << " " << piloto.mNome;
+        mFilaMensagens .push(oss.str());
+		EscreverLog("Comando adicioado à fila: " + oss.str());
     }
 }
