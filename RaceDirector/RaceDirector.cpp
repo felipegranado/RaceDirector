@@ -26,12 +26,35 @@ void __cdecl DestroyPluginObject( PluginObject *obj )  { delete( static_cast< Ra
 
 RaceDirectorPlugin::RaceDirectorPlugin()
 {
+
+	// Logging variables
+	mLogEnabled = true; // Habilita o log por padrão
+	mIdioma = 0; // 0 = Inglês, 1 = Português
+
     mNumPilotos = 0;
     mMaxPilotos = 0;
     mFase = 0;
 
     mAtualizaTelemetria = false;
     mAplicaPenalidade = false;
+
+
+	// Start Control variables
+    mStartControlEnabled = -1;
+    mStartControlGear = -2;
+	mStartControlLimiter = -1;
+	mStartControlMaxVelKPH = -1.0;
+	mStartControlPenalty = -3; // -3 = Disabled, -2 = Longest Line, -1 = Drive-Thru, 0-60 = Stop&Go
+
+
+	// Full Course Yellow (FCY) variables
+    mFCYAtivo = false;
+    mContagemFCY = false;
+    mTempoFCY = 0.0;
+    mContagemParaFCY = 10.0; // Exemplo de tempo para iniciar FCY
+    mContagemParaVerde = 10.0; // Exemplo de tempo para bandeira verde
+    mVelocidadeFCY = 80.0; // Exemplo de velocidade máxima durante FCY
+    mPilotoCausador = -1;
 }
 
 
@@ -40,10 +63,8 @@ void RaceDirectorPlugin::SetEnvironment(const EnvironmentInfoV01& info)
     string caminhoBase = info.mPath[0];
     mLogLocal = caminhoBase + "Log\\RaceDirector\\";
 
-    if (!fs::exists(mLogLocal))
-    {
-        fs::create_directories(mLogLocal);
-    }
+    // Cria a pasta se não existir
+    CreateDirectoryA(mLogLocal.c_str(), NULL);
 }
 
 
@@ -91,15 +112,15 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
                 piloto.mVeiculo = vsi.mVehicleName;
                 piloto.mClasse = vsi.mVehicleClass;
                 piloto.mPit = vsi.mInPits;
-				piloto.mVelKPH = 0.0;
-				piloto.mVelMPH = 0.0;
-				piloto.mMarcha = 0;
+                piloto.mVelKPH = 0.0;
+                piloto.mVelMPH = 0.0;
+                piloto.mMarcha = 0;
                 piloto.mLimitador = 0;
 
                 mPilotos.push_back(piloto);
             }
 
-            if( mFase == 5 ) // Fase de corrida
+            if (mFase == 5) // Fase de corrida
             {
                 mAtualizaTelemetria = true; // Habilita atualizacoes de telemetria apenas na fase de corrida
 
@@ -112,13 +133,47 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
                 EscreverLog(oss.str());
 
                 EscreverLog("---------- CORRIDA INICIADA ----------");
+
+
             }
             else if (mFase == 6) // Fase de fim de corrida
             {
                 EscreverLog("---------- CORRIDA FINALIZADA ----------");
-			}
+            }
         }
     }
+}
+
+bool RaceDirectorPlugin::AccessTrackRules(TrackRulesV01& info)
+{
+    // info.mNumParticipants: quantidade de participantes
+    // info.mParticipant: ponteiro para o array de TrackRulesParticipantV01
+
+    // Exemplo: Atualizar PilotoInfo com dados do TrackRules
+    for (int i = 0; i < info.mNumParticipants; ++i) {
+        const TrackRulesParticipantV01& trp = info.mParticipant[i];
+        // Procure o piloto correspondente pelo mID
+        for (auto& piloto : mPilotos) {
+            if (piloto.mID == trp.mID) {
+                piloto.mFrozenOrder = trp.mFrozenOrder;
+                piloto.mPlace = trp.mPlace;
+                piloto.mYellowSeverity = trp.mYellowSeverity;
+                piloto.mCurrentRelativeDistance = trp.mCurrentRelativeDistance;
+                piloto.mRelativeLaps = trp.mRelativeLaps;
+                piloto.mColumnAssignment = trp.mColumnAssignment;
+                piloto.mPositionAssignment = trp.mPositionAssignment;
+                piloto.mPitsOpen = trp.mPitsOpen;
+                piloto.mUpToSpeed = trp.mUpToSpeed;
+                piloto.mGoalRelativeDistance = trp.mGoalRelativeDistance;
+                piloto.mMessage = trp.mMessage;
+            }
+        }
+    }
+
+    // Aqui você pode chamar sua lógica de FCY, por exemplo:
+    CheckFullCourseYellow(info.mParticipant, info.mNumParticipants, info.mCurrentET);
+
+    return false; // Retorne true apenas se quiser modificar TrackRulesV01
 }
 
 
@@ -142,16 +197,6 @@ void RaceDirectorPlugin::UpdateTelemetry(const TelemInfoV01& info)
             piloto.mMarcha = info.mGear;
             piloto.mLimitador = info.mSpeedLimiter;
 
-            /*
-            ostringstream oss;
-			oss << "ID: " << piloto.mID
-                << "\t| Piloto: " << piloto.mNome
-                << "\t| Classe: " << piloto.mClasse
-                << "\t| Vel KPH: " << piloto.mVelKPH
-                << "\t| Marcha: " << piloto.mMarcha
-                << "\t| Limitador: " << to_string(piloto.mLimitador);
-            */
-
             if (!piloto.mJaLogado)
             {
                 EscreverLog("ID: " + to_string(piloto.mID) + "\t | Piloto: " + piloto.mNome + "\t| Vel KPH: " + to_string(piloto.mVelKPH) + "\t| Marcha: " + to_string(piloto.mMarcha) + "\t| Limitador: " + to_string(piloto.mLimitador));
@@ -159,7 +204,8 @@ void RaceDirectorPlugin::UpdateTelemetry(const TelemInfoV01& info)
                 piloto.mJaLogado = true;
             }
 
-            CheckStartControl(piloto);
+            CheckStartControl(piloto); // penalização se necessário
+			CheckDownshift(piloto); // verifica reducao de marcha
         }
 	}
 	mAtualizaTelemetria = false; // Desabilita atualizacoes de telemetria apos o processamento  
@@ -230,23 +276,51 @@ bool RaceDirectorPlugin::GetCustomVariable(long i, CustomVariableV01 &var)
     }
     case 5:
     {
+        strcpy_s(var.mCaption, "StartControl.Gear#");
+        var.mNumSettings = 1;
+        var.mCurrentSetting = 0;
+        return(true);
+    }
+    case 6:
+    {
         strcpy_s(var.mCaption, "StartControl.Limiter");
         var.mNumSettings = 2;
         var.mCurrentSetting = 1;
         return(true);
     }
-    case 6:
+    case 7:
+    {
+        strcpy_s(var.mCaption, "StartControl.Limiter#");
+        var.mNumSettings = 1;
+        var.mCurrentSetting = 0;
+        return(true);
+    }
+    case 8:
     {
         strcpy_s(var.mCaption, "StartControl.MaxVelKPH");
         var.mNumSettings = 301;
         var.mCurrentSetting = 80;
         return(true);
     }
-    case 7:
+    case 9:
+    {
+        strcpy_s(var.mCaption, "StartControl.MaxVelKPH#");
+        var.mNumSettings = 1;
+        var.mCurrentSetting = 0;
+        return(true);
+    }
+    case 10:
     {
         strcpy_s(var.mCaption, "StartControl.Penalty");
         var.mNumSettings = 64;
         var.mCurrentSetting = -1;
+        return(true);
+    }
+    case 11:
+    {
+        strcpy_s(var.mCaption, "StartControl.Penalty#");
+        var.mNumSettings = 1;
+        var.mCurrentSetting = 0;
         return(true);
     }
     }
@@ -290,6 +364,11 @@ void RaceDirectorPlugin::GetCustomVariableSetting(CustomVariableV01 &var, long i
             sprintf_s(setting.mName, "Disabled");
         else if (i > 0)
             sprintf_s(setting.mName, "%d", mStartControlGear);
+    }
+    else if (0 == _stricmp(var.mCaption, "StartControl.Gear#"))
+    {
+        if (i == 0)
+            sprintf_s(setting.mName, "Gear must be in. 0 = Disable.");
     }
     else if (0 == _stricmp(var.mCaption, "StartControl.Limiter"))
     {
@@ -358,13 +437,16 @@ void RaceDirectorPlugin::AccessCustomVariable(CustomVariableV01& var)
 
 void RaceDirectorPlugin::GerarLog()
 {
-    auto agora = chrono::system_clock::now();
-    time_t t = chrono::system_clock::to_time_t(agora);
+    time_t rawTime;
+    time(&rawTime);             // obtém o tempo atual em segundos
     tm now;
-    localtime_s(&now, &t);
+    localtime_s(&now, &rawTime); // converte para struct tm local
 
-    ostringstream oss;
-    oss << "RD-" << put_time(&now, "%Y_%m_%d-%H_%M_%S") << ".txt";
+    char buffer[64];
+    strftime(buffer, sizeof(buffer), "%Y_%m_%d-%H_%M_%S", &now);
+
+    std::ostringstream oss;
+    oss << "RD-" << buffer << ".txt";
 
     mLogLocal += oss.str();
 }
@@ -382,6 +464,9 @@ void RaceDirectorPlugin::EscreverLog(const string msg) const
 
 void RaceDirectorPlugin::CheckStartControl(PilotoInfo& piloto)
 {
+    if (piloto.mVerificouLargada);
+	    return; // Já verificou a largada, não faz nada
+
     if (!piloto.mPit && mStartControlEnabled)
     {
         if (piloto.mVelKPH > mStartControlMaxVelKPH)
@@ -407,6 +492,106 @@ void RaceDirectorPlugin::CheckStartControl(PilotoInfo& piloto)
         ostringstream oss;
         oss << "/addpenalty " << mStartControlPenalty << " " << piloto.mNome;
         mFilaMensagens .push(oss.str());
-		EscreverLog("Comando adicioado à fila: " + oss.str());
+		EscreverLog("Comando adicionado à fila: " + oss.str());
+    }
+
+	piloto.mVerificouLargada = true; // Marca que a verificação foi feita
+}
+
+
+void RaceDirectorPlugin::CheckDownshift(PilotoInfo& piloto)
+{
+    if (piloto.mDetectouMudanca)
+        return;
+
+    if (!piloto.mMarchaLargada &&
+        piloto.mMarcha == mStartControlGear)
+    {
+        piloto.mMarchaLargada = true;
+    }
+
+    if (piloto.mMarchaLargada &&
+        piloto.mMarcha != piloto.mMarchaAnterior)
+    {
+        if (piloto.mMarcha < piloto.mMarchaAnterior)
+        {
+            EscreverLog("REDUÇÃO DETECTADA: " + piloto.mNome +
+                " - De " + std::to_string(piloto.mMarchaAnterior) +
+                " para " + std::to_string(piloto.mMarcha));
+        }
+
+        piloto.mDetectouMudanca = true;
+    }
+
+    piloto.mMarchaAnterior = piloto.mMarcha;
+}
+
+
+void RaceDirectorPlugin::CheckFullCourseYellow(const TrackRulesParticipantV01* participants, int numParticipants, double currentET)
+{
+    // 1. Detectar necessidade de FCY
+    double somaYellow = 0.0;
+    int causador = -1;
+    float maiorYellow = 0.0f;
+
+    for (int i = 0; i < numParticipants; ++i) {
+        float yellow = participants[i].mYellowSeverity;
+        somaYellow += yellow;
+        if (yellow > maiorYellow) {
+            maiorYellow = yellow;
+            causador = participants[i].mID;
+        }
+    }
+
+    // 2. Acionar FCY se necessário
+    if (!mFCYAtivo && somaYellow > 1.0f) // 1.0f é um exemplo de threshold, ajuste conforme necessário
+    {
+        mFCYAtivo = true;
+        mTempoFCY = currentET + mContagemParaFCY;
+        mPilotoCausador = causador;
+        EscreverLog("FCY acionado! Causador: " + to_string(mPilotoCausador));
+        mFilaMensagens.push("ATENÇÃO: FULL COURSE YELLOW em instantes!");
+    }
+
+    // 3. Durante FCY, monitorar pilotos
+    if (mFCYAtivo && currentET >= mTempoFCY)
+    {
+        for (auto& piloto : mPilotos)
+        {
+            if (!piloto.mPit)
+            {
+                if (piloto.mVelKPH > mVelocidadeFCY || piloto.mLimitador == 0)
+                {
+                    ostringstream oss;
+                    oss << "/addpenalty " << mStartControlPenalty << " " << piloto.mNome;
+                    mFilaMensagens.push(oss.str());
+                    EscreverLog("Penalidade FCY: " + piloto.mNome);
+                }
+            }
+        }
+        // Se causador entrou no pit, iniciar contagem para bandeira verde
+        for (auto& piloto : mPilotos)
+        {
+            if (piloto.mID == mPilotoCausador && piloto.mPit)
+            {
+                if (!mContagemFCY) {
+                    mContagemFCY = true;
+                    mTempoFCY = currentET + mContagemParaVerde;
+                    EscreverLog("Causador entrou no pit. Contagem para bandeira verde iniciada.");
+                    mFilaMensagens.push("Causador do FCY entrou no pit. Green em breve!");
+                }
+            }
+        }
+    }
+
+    // 4. Voltar à bandeira verde
+    if (mContagemFCY && currentET >= mTempoFCY)
+    {
+        mFCYAtivo = false;
+        mContagemFCY = false;
+        mPilotoCausador = -1;
+        EscreverLog("Bandeira verde! FCY encerrado.");
+        mFilaMensagens.push("Bandeira verde! FCY encerrado.");
+        // Aqui você pode alterar mFase/mGamePhase se necessário
     }
 }

@@ -2,35 +2,55 @@
 #define _RACEDIRECTOR_HPP_
 
 #include "InternalsPlugin.hpp"  // classe base da qual os objetos de plugin devem derivar
-#include <filesystem>
+#include <ctime>              // para manipulação de data e hora
 #include <fstream>
 #include <iostream>
 #include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
+#include <Windows.h>
 
 using namespace std;
-namespace fs = filesystem;
 
 struct PilotoInfo {
 
     // VehicleScoringInfoV01
-    int mIndex;
-    long mID;
+    int mIndex = -1;
+    long mID = -1;
     string mNome;
     string mVeiculo;
     string mClasse;
-    bool mPit;
+    bool mPit = false;
+
 
     // TelemInfoV01
-    double mVelMPH;
-    double mVelKPH;
-    long mMarcha;
-    unsigned char mLimitador;
+    double mVelMPH = 0.0;
+    double mVelKPH = 0.0;
+	long mMarcha = 0; // 0 = desativado, 1+ marchas, etc.
+	unsigned char mLimitador = 0; // 0 = off, 1 = on
 
-	double mMelhorVolta;               // best lap time in current session
+
+    // StartControl
+	bool mVerificouLargada = false; // se a largada do piloto foi verificada
+	bool mMarchaLargada = false; // marcha que o piloto largou
+    bool mDetectouMudanca = false; // detecta reducao de marcha
+    int mMarchaAnterior = 0; // para controle de marcha
     bool mJaLogado = false;
+    
+    
+    // TrackRulesParticipantV01
+    short mFrozenOrder = -1;
+    short mPlace = -1;
+    float mYellowSeverity = 0.0f;
+    double mCurrentRelativeDistance = 0.0;
+    long mRelativeLaps = 0;
+    TrackRulesColumnV01 mColumnAssignment = TRCOL_INVALID;
+    long mPositionAssignment = -1;
+    unsigned char mPitsOpen = 0;
+    bool mUpToSpeed = false;
+    double mGoalRelativeDistance = 0.0;
+    string mMessage;
 
 };
 
@@ -61,6 +81,9 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     // ambiente
     void SetEnvironment(const EnvironmentInfoV01& info);
 
+	bool WantsTrackRulesAccess() { return(true); } // permite acesso às regras de pista
+	bool AccessTrackRules(TrackRulesV01& info) { return(true); } // permite acesso às regras de pista
+
     // variaveis personalizadas
     bool GetCustomVariable( long i, CustomVariableV01 &var );
     void AccessCustomVariable( CustomVariableV01 &var );
@@ -83,6 +106,9 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     string mMensagem;
 	queue<string> mFilaMensagens;
 
+    float mTempoInicioCorrida = -1.0f; // marcar quando a fase mudou para corrida
+    float mDuracaoVerificacao = 10.0f; // segundos de verificação após a largada
+
     int mIdioma;
 
     // Custom variables
@@ -92,11 +118,21 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
 	double mStartControlMaxVelKPH;
     int mStartControlPenalty;
 
+    // Full Course Yellow
+    bool mFCYAtivo = false;
+    bool mContagemFCY = false;
+    double mTempoFCY = 0.0;
+    int mPilotoCausador = -1;
+    double mVelocidadeFCY = 80.0; // Exemplo: 80 km/h
+    double mContagemParaFCY = 10.0; // segundos
+    double mContagemParaVerde = 10.0; // segundos
+
     void GerarLog();
     void EscreverLog(const string msg) const;
     void CheckStartControl(PilotoInfo& piloto);
+    void CheckDownshift(PilotoInfo& piloto);
     // void CheckMulticlassQualifying();
-    // void CheckFullCourseYellow();
+    void CheckFullCourseYellow(const TrackRulesParticipantV01* participants, int numParticipants, double currentET);
 };
 
 
