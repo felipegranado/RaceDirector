@@ -464,7 +464,7 @@ void RaceDirectorPlugin::EscreverLog(const string msg) const
 
 void RaceDirectorPlugin::CheckStartControl(PilotoInfo& piloto)
 {
-    if (piloto.mVerificouLargada);
+    if (piloto.mVerificouLargada)
 	    return; // Já verificou a largada, não faz nada
 
     if (!piloto.mPit && mStartControlEnabled)

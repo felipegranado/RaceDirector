@@ -82,7 +82,7 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     void SetEnvironment(const EnvironmentInfoV01& info);
 
 	bool WantsTrackRulesAccess() { return(true); } // permite acesso às regras de pista
-	bool AccessTrackRules(TrackRulesV01& info) { return(true); } // permite acesso às regras de pista
+    bool AccessTrackRules(TrackRulesV01& info); // permite acesso às regras de pista
 
     // variaveis personalizadas
     bool GetCustomVariable( long i, CustomVariableV01 &var );
