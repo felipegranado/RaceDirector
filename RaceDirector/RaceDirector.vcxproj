@@ -19,12 +19,12 @@
     </ProjectConfiguration>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="InternalsPlugin.hpp" />
-    <ClInclude Include="PluginObjects.hpp" />
-    <ClInclude Include="RaceDirector.hpp" />
+    <ClInclude Include="Include\InternalsPlugin.hpp" />
+    <ClInclude Include="Include\PluginObjects.hpp" />
+    <ClInclude Include="Include\RaceDirector.hpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="RaceDirector.cpp" />
+    <ClCompile Include="Source\RaceDirector.cpp" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
@@ -127,6 +127,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <LanguageStandard>Default</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -145,6 +146,7 @@
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <LanguageStandard>Default</LanguageStandard>
       <LanguageStandard_C>Default</LanguageStandard_C>
+      <AdditionalIncludeDirectories>$(ProjectDir)Include</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>

@@ -13,7 +13,7 @@
 
 using namespace std;
 
-struct PilotoInfo {
+struct DriverInfo {
 
     // VehicleScoringInfoV01
     int mIndex = -1;
@@ -54,6 +54,12 @@ struct PilotoInfo {
 
 };
 
+struct RscPenaltyID {
+    int mID = -1; // ID do piloto
+    string mDriverName; // Nome do piloto
+    string mVehicleName; // Nome do veiculo
+};
+
 
 class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao exportada GetPluginVersion() deve retornar 1 se voce estiver derivando de InternalsPluginV01, 2 para InternalsPluginV02, etc.
 {
@@ -61,7 +67,6 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
 
     RaceDirectorPlugin();
     //~RaceDirectorPlugin();
-
 
     // These are the functions derived from base class InternalsPlugin that can be implemented.
     void StartSession();              // session has started
@@ -76,7 +81,7 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     void UpdateScoring( const ScoringInfoV01 &info );
 
     // mensagem
-    bool WantsToDisplayMessage(MessageInfoV01 &msgInfo);
+    bool WantsToDisplayMessage(MessageInfoV01 &msg);
 
     // ambiente
     void SetEnvironment(const EnvironmentInfoV01& info);
@@ -89,50 +94,127 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     void AccessCustomVariable( CustomVariableV01 &var );
     void GetCustomVariableSetting( CustomVariableV01 &var, long i, CustomSettingV01 &setting );
 
+private:
 
-  protected:
-
-    vector<PilotoInfo> mPilotos;
+    vector<DriverInfo> mDrivers;
     long mNumPilotos;
     long mMaxPilotos;
     
-    unsigned char mFase;
-    bool mAtualizaTelemetria;
+    // unsigned char mFase;
 
-    bool mLogEnabled;
-    string mLogLocal;
-
-    bool mAplicaPenalidade;
-    string mMensagem;
-	queue<string> mFilaMensagens;
+	// Message to MessageInfoV01
+	queue<string> mFilaMensagem;
 
     float mTempoInicioCorrida = -1.0f; // marcar quando a fase mudou para corrida
     float mDuracaoVerificacao = 10.0f; // segundos de verificação após a largada
 
-    int mIdioma;
-
-    // Custom variables
-    bool mStartControlEnabled;
-	long mStartControlGear;
-	long mStartControlLimiter;
-	double mStartControlMaxVelKPH;
-    int mStartControlPenalty;
-
     // Full Course Yellow
     bool mFCYAtivo = false;
-    bool mContagemFCY = false;
+    
     double mTempoFCY = 0.0;
     int mPilotoCausador = -1;
     double mVelocidadeFCY = 80.0; // Exemplo: 80 km/h
     double mContagemParaFCY = 10.0; // segundos
     double mContagemParaVerde = 10.0; // segundos
 
-    void GerarLog();
-    void EscreverLog(const string msg) const;
-    void CheckStartControl(PilotoInfo& piloto);
-    void CheckDownshift(PilotoInfo& piloto);
     // void CheckMulticlassQualifying();
-    void CheckFullCourseYellow(const TrackRulesParticipantV01* participants, int numParticipants, double currentET);
+    
+	void InicializarPilotos(const ScoringInfoV01& info);
+
+
+    // Log
+    bool mLogHabilitar;
+    string mLogPasta;
+    ofstream mLogArquivo;
+    
+    void CriarLog();
+    void EscreverLog(double tempo, const char* msg) const;
+	
+
+    // Full Course Yellow
+
+    double mInicioFase = -1;
+    double mTempoLimite = -1;
+    double mContagemFCY = -1;
+    double mContagemGreen = -1;
+    double mVelocidadeKPH = -1;
+
+    enum FaseFCY
+    {
+        FASE_VERDE = 0,
+        FASE_LIMITE,
+        FASE_CONTAGEM_FCY,
+        FASE_FCY,
+        FASE_CONTAGEM_GREEN
+    };
+
+    FaseFCY mFase;
+
+    void FullCourseYellow(TrackRulesV01& info);
+
+
+    // Rolling Start Control
+
+    bool mTelemEnabled = false;
+
+    bool mRscEnabled = true;
+    long mRscGear = 0;
+    long mRscLimiter = 0;
+    double mRscMaxVelKPH = 0;
+    int mRscPenalty = 0;
+
+    vector<RscPenaltyID> mRscPenaltyList;
+
+    void CheckStartControl(const TelemInfoV01& info);
+    // void CheckStartControl(DriverInfo& piloto);
+    // void CheckDownshift(DriverInfo& piloto);
+};
+
+
+
+class FullCourseYellow {
+public:
+
+    bool mEnabled;
+
+    float mVerifyTimeFCY;
+    float mCountdownFCY;
+    float mVerifyTimeGreen;
+    float mCountdownGreen;
+
+    
+
+
+    
+
+private:
+
+    enum class State { GREEN, FCY_COUNTDOWN_1, FCY_COUNTDOWN_2, FCY, GREEN_COUNTDOWN_1, GREEN_COUNTDOWN_2 };
+
+    State mState;
+
+    float mTempoEstado = 0.0f;
+
+    string mGlobalMessage;
+
+    float countdownTime = -1.0f;
+
+
+    float mCount1FCY = -1.0f;
+    float mStartCount = 0.0f;
+    int mPilotoCausadorID = -1;
+    float mCountPos = -1.0f;
+
+    // Configurações editáveis
+    float mCountPreSetting = 10.0f;
+    float mCountYellow = 10.0f;
+    float mCountGreen = 10.0f;
+
+    TrackRulesStageV01 mStage;
+
+
+
+
 };
 
 
