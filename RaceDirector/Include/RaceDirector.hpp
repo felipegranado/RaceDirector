@@ -2,7 +2,7 @@
 #define _RACEDIRECTOR_HPP_
 
 #include "InternalsPlugin.hpp"  // classe base da qual os objetos de plugin devem derivar
-#include <ctime>              // para manipulação de data e hora
+#include <ctime>              // para manipulaÃ§Ã£o de data e hora
 #include <fstream>
 #include <iostream>
 #include <queue>
@@ -86,8 +86,8 @@ class RaceDirectorPlugin : public InternalsPluginV07 // LEMBRETE: a funcao expor
     // ambiente
     void SetEnvironment(const EnvironmentInfoV01& info);
 
-	bool WantsTrackRulesAccess() { return(true); } // permite acesso às regras de pista
-    bool AccessTrackRules(TrackRulesV01& info); // permite acesso às regras de pista
+	bool WantsTrackRulesAccess() { return(true); } // permite acesso Ã s regras de pista
+    bool AccessTrackRules(TrackRulesV01& info); // permite acesso Ã s regras de pista
 
     // variaveis personalizadas
     bool GetCustomVariable( long i, CustomVariableV01 &var );
@@ -106,16 +106,7 @@ private:
 	queue<string> mFilaMensagem;
 
     float mTempoInicioCorrida = -1.0f; // marcar quando a fase mudou para corrida
-    float mDuracaoVerificacao = 10.0f; // segundos de verificação após a largada
-
-    // Full Course Yellow
-    bool mFCYAtivo = false;
-    
-    double mTempoFCY = 0.0;
-    int mPilotoCausador = -1;
-    double mVelocidadeFCY = 80.0; // Exemplo: 80 km/h
-    double mContagemParaFCY = 10.0; // segundos
-    double mContagemParaVerde = 10.0; // segundos
+    float mDuracaoVerificacao = 10.0f; // segundos de verificaÃ§Ã£o apÃ³s a largada
 
     // void CheckMulticlassQualifying();
     
@@ -123,21 +114,22 @@ private:
 
 
     // Log
-    bool mLogHabilitar;
-    string mLogPasta;
-    ofstream mLogArquivo;
+    bool logHabilitar;
+    string logPasta;
+    ofstream logArquivo;
     
     void CriarLog();
     void EscreverLog(double tempo, const char* msg) const;
 	
 
     // Full Course Yellow
-
-    double mInicioFase = -1;
-    double mTempoLimite = -1;
-    double mContagemFCY = -1;
-    double mContagemGreen = -1;
-    double mVelocidadeKPH = -1;
+    bool fcyHabilitar;
+    double fcyInicioFase;
+    double fcyTempoLimite;
+    double fcyContagemFCY;
+    double fcyTempoFCY;
+    double fcyContagemGreen;
+    double fcyVelKPH;
 
     enum FaseFCY
     {
@@ -154,9 +146,7 @@ private:
 
 
     // Rolling Start Control
-
     bool mTelemEnabled = false;
-
     bool mRscEnabled = true;
     long mRscGear = 0;
     long mRscLimiter = 0;
@@ -205,7 +195,7 @@ private:
     int mPilotoCausadorID = -1;
     float mCountPos = -1.0f;
 
-    // Configurações editáveis
+    // ConfiguraÃ§Ãµes editÃ¡veis
     float mCountPreSetting = 10.0f;
     float mCountYellow = 10.0f;
     float mCountGreen = 10.0f;
