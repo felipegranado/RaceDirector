@@ -96,13 +96,13 @@ void RaceDirectorPlugin::UpdateScoring(const ScoringInfoV01& info)
                     << "\t| Tempo: " << info.mCurrentET;
                 WriteLog(oss.str());
 
-                WriteLog("---------- CORRIDA INICIADA ----------");
+                EscreverLog(info.mCurrentET, "--- CORRIDA INICIADA ---");
 
 
             }
             else if (mFase == 6) // Fase de fim de corrida
             {
-                WriteLog("---------- CORRIDA FINALIZADA ----------");
+                EscreverLog(info.mCurrentET, "--- CORRIDA FINALIZADA ---");
             }
         }
     }
@@ -114,7 +114,6 @@ long RaceDirectorPlugin::WantsTelemetryUpdates()
 {
     return mTelemEnabled ? 2 : 0;
 }
-
 
 
 void RaceDirectorPlugin::UpdateTelemetry(const TelemInfoV01& info)
@@ -150,19 +149,13 @@ bool RaceDirectorPlugin::WantsToDisplayMessage(MessageInfoV01 &msg)
 
 bool RaceDirectorPlugin::AccessTrackRules(TrackRulesV01& info)
 {
-
-}
-
-/*
-bool RaceDirectorPlugin::AccessTrackRules(TrackRulesV01& info)
-{
     // Aqui você pode chamar sua lógica de FCY, por exemplo:
 
-    mFCY.CheckFullCourseYellow(info);
+    FullCourseYellow(info);
 
     return true; // Retorne true apenas se quiser modificar TrackRulesV01
 }
-*/
+
 
 bool RaceDirectorPlugin::GetCustomVariable(long i, CustomVariableV01 &var)
 {
@@ -363,7 +356,7 @@ void RaceDirectorPlugin::AccessCustomVariable(CustomVariableV01& var)
     }
     else if (0 == _stricmp(var.mCaption, "FullCourseYellow.Enabled"))
     {
-        mFCY.mEnabled = (var.mCurrentSetting != 0);
+        fcyHabilitar = (var.mCurrentSetting != 0);
     }
     else if (0 == _stricmp(var.mCaption, "FullCourseYellow.VerifyTimeFCY"))
     {
@@ -371,7 +364,7 @@ void RaceDirectorPlugin::AccessCustomVariable(CustomVariableV01& var)
     }
     else if (0 == _stricmp(var.mCaption, "FullCourseYellow.CountdownFCY"))
     {
-        mFCY.mCountdownFCY = var.mCurrentSetting;
+        fcyContagemFCY = var.mCurrentSetting;
     }
     else if (0 == _stricmp(var.mCaption, "FullCourseYellow.VerifyTimeGreen"))
     {
@@ -379,7 +372,7 @@ void RaceDirectorPlugin::AccessCustomVariable(CustomVariableV01& var)
     }
     else if (0 == _stricmp(var.mCaption, "FullCourseYellow.CountdownGreen"))
     {
-        mFCY.mCountdownGreen = var.mCurrentSetting;
+        fcyContagemGreen = var.mCurrentSetting;
     }
     else if (0 == _stricmp(var.mCaption, "StartControl.Enabled"))
     {
