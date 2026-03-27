@@ -8,10 +8,8 @@
 
 RaceDirectorPlugin::RaceDirectorPlugin()
 {
+
     double mTempoLimite = -1;
-    double mContagemFCY = -1;
-    double mContagemGreen = -1;
-    double mVelocidadeKPH = -1;
     double mPenalidade = -1;
 
     bool mLog = false;
@@ -26,13 +24,12 @@ RaceDirectorPlugin::RaceDirectorPlugin()
     mFase = 0;
 
 	// Full Course Yellow (FCY) variables
-    mFCYAtivo = false;
-    mContagemFCY = false;
-    mTempoFCY = 0.0;
-    mContagemParaFCY = 10.0; // Exemplo de tempo para iniciar FCY
-    mContagemParaVerde = 10.0; // Exemplo de tempo para bandeira verde
-    mVelocidadeFCY = 80.0; // Exemplo de velocidade máxima durante FCY
-    mPilotoCausador = -1;
+    fcyHabilitar = false;
+    fcyContagemFCY = -1;
+    fcyTempoFCY = 0.0;
+    fcyContagemGreen = -1; // Exemplo de tempo para bandeira verde
+    fcyVelKPH = -1; // Exemplo de velocidade máxima durante FCY
+    fcyCausador = -1;
 }
 
 
